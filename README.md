@@ -1,5 +1,5 @@
 # NEAT_for_Godot
-## WORK IN PROGRESS- A wiki, a video and a binary will be added soon
+## WORK IN PROGRESS- A proper readme, a wiki, a video and a binary will be added soon
 An implementation of Kenneth O. Stanley's NEAT Algorithm for the Godot game engine, written in gdscript.
 
 ## credits
