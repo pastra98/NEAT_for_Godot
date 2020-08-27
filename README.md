@@ -1,9 +1,11 @@
 # NEAT_for_Godot
-## work in progress, documentation will be added soon
+## WORK IN PROGRESS- A wiki, a video and a binary will be added soon
 An implementation of Kenneth O. Stanley's NEAT Algorithm for the Godot game engine, written in gdscript.
 
-
 ## credits
+The NEAT algorithm was originally conceived by
+[Kenneth O. Stanley](https://www.cs.ucf.edu/~kstanley/).
+
 Matt Buckland's [AI Techniques for Game Programming](https://www.amazon.de/Techniques-Programming-Premier-Press-Development/dp/193184108X)
 inspired me to undertake this project, and the c++ snippets included in the NEAT
 chapter were a great resource for starting off.
