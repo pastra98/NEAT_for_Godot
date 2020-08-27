@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://demos/cars/race_mode/game_over_splash.gd" type="Script" id=1]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-black-italic.tres" type="DynamicFont" id=2]
+
+[sub_resource type="Gradient" id=1]
+offsets = PoolRealArray( 0, 0.896774 )
+colors = PoolColorArray( 0.529412, 0.192157, 0.541176, 1, 0.333333, 0.454902, 0.705882, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[node name="GameOverSplash" type="Control"]
+anchor_left = 0.280469
+anchor_top = 0.316667
+anchor_right = 0.719531
+anchor_bottom = 0.683333
+margin_right = 0.400085
+rect_min_size = Vector2( 450, 220 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Background" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -6.10352e-05
+margin_bottom = -1.52588e-05
+texture = SubResource( 2 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InfoText" type="Label" parent="."]
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.6
+margin_right = 0.400024
+margin_bottom = 6.0
+size_flags_horizontal = 4
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GoBack" type="Button" parent="."]
+anchor_left = 0.05
+anchor_top = 0.75
+anchor_right = 0.35
+anchor_bottom = 0.9
+margin_left = 0.0800018
+margin_top = 0.019989
+margin_right = -0.142395
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 3 )
+custom_styles/normal = SubResource( 3 )
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_hover = Color( 0.823529, 0.823529, 0.823529, 1 )
+custom_colors/font_color_pressed = Color( 0.623529, 0.623529, 0.623529, 1 )
+text = "Return to demos"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Retry" type="Button" parent="."]
+anchor_left = 0.433
+anchor_top = 0.75
+anchor_right = 0.95
+anchor_bottom = 0.9
+margin_left = 0.0800018
+margin_top = 0.019989
+margin_right = -0.142395
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 3 )
+custom_styles/normal = SubResource( 3 )
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_hover = Color( 0.823529, 0.823529, 0.823529, 1 )
+custom_colors/font_color_pressed = Color( 0.623529, 0.623529, 0.623529, 1 )
+text = "Retry"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 225, 110 )
+current = true
+[connection signal="pressed" from="GoBack" to="." method="_on_GoBack_pressed"]
+[connection signal="pressed" from="Retry" to="." method="_on_Retry_pressed"]

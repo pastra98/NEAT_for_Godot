@@ -1,0 +1,73 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://NEAT_usability/textures/close_window.png" type="Texture" id=1]
+[ext_resource path="res://NEAT_usability/gui/Window.gd" type="Script" id=2]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-bold.tres" type="DynamicFont" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.878431, 0.882353, 0.647059, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 1 )
+
+[node name="Window" type="MarginContainer"]
+margin_right = 179.0
+margin_bottom = 118.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="Panel" parent="."]
+margin_right = 179.0
+margin_bottom = 118.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WindowLayout" type="VBoxContainer" parent="."]
+margin_right = 179.0
+margin_bottom = 118.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Decorator" type="MarginContainer" parent="WindowLayout"]
+margin_right = 179.0
+margin_bottom = 26.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="WindowLayout/Decorator"]
+margin_right = 179.0
+margin_bottom = 26.0
+custom_styles/panel = SubResource( 2 )
+
+[node name="DecSeperator" type="HBoxContainer" parent="WindowLayout/Decorator"]
+margin_right = 179.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WindowName" type="Label" parent="WindowLayout/Decorator/DecSeperator"]
+margin_top = 3.0
+margin_right = 143.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
+text = "Window Name"
+
+[node name="Close" type="Button" parent="WindowLayout/Decorator/DecSeperator"]
+margin_left = 147.0
+margin_right = 179.0
+margin_bottom = 26.0
+icon = ExtResource( 1 )
+flat = true
+[connection signal="gui_input" from="WindowLayout/Decorator" to="WindowLayout/Decorator" method="_on_Decorator_gui_input"]
+[connection signal="button_down" from="WindowLayout/Decorator/DecSeperator/Close" to="WindowLayout/Decorator" method="_on_Close_button_down"]

@@ -1,0 +1,83 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://demos/cars/tracks/Checkpoint.gd" type="Script" id=1]
+[ext_resource path="res://demos/cars/tracks/track_1/track_1.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 23.5759, 160.383 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 102.322, 81.382 )
+
+[node name="Track" type="Node2D"]
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 3.14981, -0.630005 )
+texture = ExtResource( 2 )
+
+[node name="Start" type="Position2D" parent="."]
+position = Vector2( -1508.86, -1607.36 )
+
+[node name="PlayerStart" type="Position2D" parent="."]
+position = Vector2( -1509.65, -1661.33 )
+
+[node name="Center" type="Position2D" parent="."]
+position = Vector2( -60.5889, -383.029 )
+
+[node name="Bounds" type="Area2D" parent="." groups=[
+"bounds",
+]]
+position = Vector2( 3.14981, -0.630005 )
+
+[node name="InnerTrackCol1" type="CollisionPolygon2D" parent="Bounds"]
+polygon = PoolVector2Array( -1524.34, -1502.8, -1265.35, -1475.89, -1050.08, -1388.44, -807.899, -1334.62, -683.446, -1344.71, -495.085, -1435.53, -219.083, -1518.78, -81.3643, -1475.89, -4.00171, -1415.34, -0.638184, -2.63867, -1127.44, 0.725098, -1073.62, -140.546, -1046.71, -261.635, -1053.44, -389.451, -1090.44, -466.813, -1107.26, -550.903, -1154.35, -614.811, -1309.07, -725.81, -1372.98, -819.99, -1463.8, -900.716, -1480.62, -1031.9, -1635.34, -1253.89, -1672.34, -1364.89, -1638.7, -1455.71 )
+
+[node name="InnerTrackCol2" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( -89.734, -1475.34, 88.266, -1403.34, 346.266, -1357.34, 764.266, -1435.34, 926.266, -1441.34, 1090.27, -1293.34, 1262.27, -1039.34, 1356.27, -785.342, 1380.27, -587.342, 1268.27, -439.342, 1244.27, -381.342, 1216.27, -65.3423, -85.734, -57.3423 )
+
+[node name="InnerTrackCol3" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( -86.19, 479.577, 1.36195, 439.168, 165.241, 448.148, 423.408, 506.516, 569.328, 603.047, 735.452, 663.661, 897.087, 605.292, 1074.44, 457.127, 1128.31, 369.575, 1157.5, 216.921, 1193.42, 100.185, 1211.38, -59.205, -86.19, -54.7151 )
+
+[node name="InnerTrackCol4" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 62.3661 )
+polygon = PoolVector2Array( -1213.14, -56.9597, -1269.26, 118.144, -1341.1, 205.696, -1350.08, 441.413, -1273.75, 519.986, -1132.32, 580.599, -903.342, 614.273, -717.014, 677.13, -584.563, 717.539, -427.418, 722.029, -339.866, 697.335, -90.6798, 484.067, -88.4349, -54.7148 )
+
+[node name="OuterTrackCol1" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( -2084.08, -2075.54, -88.3661, -2055.38, -88.3661, -1793.32, -224.438, -1823.55, -400.827, -1793.32, -647.771, -1702.6, -784.757, -1646.68, -946.006, -1629.6, -1116.46, -1717.72, -1279.14, -1777.14, -1634.03, -1773.36, -1943.62, -1765.81, -2019.13, -1705.4, -2075.77, -1709.18 )
+
+[node name="OuterTrackCol2" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( -82.3036, -1788.46, -82.3036, -2056.52, 1914.93, -2056.52, 1918.71, -63.061, 1427.9, -66.8367, 1424.12, -221.632, 1488.3, -346.223, 1612.89, -478.366, 1643.1, -633.161, 1537.38, -1067.34, 1405.24, -1275, 1163.61, -1637.44, 989.938, -1697.85, 786.061, -1694.08, 442.491, -1603.46, 276.369, -1592.14, 83.8185, -1667.65, -3.01793, -1758.26 )
+
+[node name="OuterTrackCol3" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( 1429.47, -61.5718, 1469.47, 186.428, 1469.47, 294.428, 1289.47, 494.428, 1225.47, 578.428, 1173.47, 750.428, 993.467, 886.428, 789.467, 914.428, 713.467, 974.428, 481.467, 982.428, 321.467, 786.428, 129.467, 702.428, -34.5333, 742.428, -90.5333, 822.428, -82.5333, 1494.43, 1909.47, 1486.43, 1913.47, -65.5718 )
+
+[node name="OuterTrackCol4" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( -103.484, 1494.65, -86.5331, 816.589, -192.479, 952.2, -268.761, 1015.77, -442.513, 1049.67, -641.692, 998.816, -887.487, 850.492, -1057, 799.637, -1290.08, 829.302, -1501.98, 867.443, -1646.06, 829.302, -1671.49, 562.318, -1696.92, 291.095, -1658.78, -56.4088, -2082.56, -56.4088, -2078.32, 1481.93 )
+
+[node name="OuterTrackCol5" type="CollisionPolygon2D" parent="Bounds"]
+position = Vector2( 80.635, 61.1061 )
+polygon = PoolVector2Array( -1650.3, -69.1213, -2091.04, -69.1213, -2086.8, -1709.17, -2023.23, -1704.93, -2031.71, -1454.9, -1980.85, -1323.53, -1997.8, -1255.72, -1857.96, -1132.82, -1811.34, -1086.21, -1802.86, -857.362, -1726.58, -781.08, -1599.45, -717.513, -1561.31, -636.994, -1540.12, -505.62, -1366.36, -386.96, -1387.55, -272.538 )
+
+[node name="FullLap" type="Area2D" parent="."]
+collision_layer = 0
+script = ExtResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionShape2D" parent="FullLap"]
+position = Vector2( -1555.8, -1602.17 )
+scale = Vector2( 1.13566, 0.70648 )
+shape = SubResource( 1 )
+
+[node name="HalfLap" type="Area2D" parent="."]
+collision_layer = 0
+script = ExtResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionShape2D" parent="HalfLap"]
+position = Vector2( 1239.4, 563.363 )
+rotation = 0.785398
+shape = SubResource( 2 )
