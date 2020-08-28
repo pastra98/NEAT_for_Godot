@@ -16,24 +16,24 @@ signal death
 
 
 func sense() -> Array:
-	"""Selects a new input to solve when act() gets called.
-	"""
-	curr_input = xor_inputs.pop_front()
-	return curr_input
+    """Selects a new input to solve when act() gets called.
+    """
+    curr_input = xor_inputs.pop_front()
+    return curr_input
 
 
 func act(xor_output: Array) -> void:
-	"""Calculates how good the solution of the network (xor_output) was by calculating
-	the delta between correct answer and output, and squaring it to proportionally
-	increase the reward the closer the output is to the solution.
-	"""
-	var xor_answer = xor_output[0]
-	var expected = float(curr_input[0] != curr_input[1])
-	var distance_squared = pow((expected - xor_answer), 2)
-	fitness += (1 - distance_squared)
-	if xor_inputs.empty():
-		emit_signal("death")
+    """Calculates how good the solution of the network (xor_output) was by calculating
+    the delta between correct answer and output, and squaring it to proportionally
+    increase the reward the closer the output is to the solution.
+    """
+    var xor_answer = xor_output[0]
+    var expected = float(curr_input[0] != curr_input[1])
+    var distance_squared = pow((expected - xor_answer), 2)
+    fitness += (1 - distance_squared)
+    if xor_inputs.empty():
+        emit_signal("death")
 
 
 func get_fitness() -> float:
-	return fitness
+    return fitness

@@ -31,36 +31,36 @@ var activation_sum: float
 var output: float
 
 func _init(n_id: int,
-		   type: int,
-		   pos: Vector2,
-		   curve: float,
-		   loop: bool) -> void:
-	"""Generate a new neuron
-	"""
-	neuron_id = n_id
-	neuron_type = type
-	position = pos
-	activation_curve = curve
-	loop_back = loop
+           type: int,
+           pos: Vector2,
+           curve: float,
+           loop: bool) -> void:
+    """Generate a new neuron
+    """
+    neuron_id = n_id
+    neuron_type = type
+    position = pos
+    activation_curve = curve
+    loop_back = loop
 
 
 func copy() -> Neuron:
-	"""Returns a deep copy of this Neuron.
-	"""
-	var copy = get_script().new(neuron_id,
-								neuron_type,
-								position,
-								activation_curve,
-								loop_back)
-	return copy
+    """Returns a deep copy of this Neuron.
+    """
+    var copy = get_script().new(neuron_id,
+                                neuron_type,
+                                position,
+                                activation_curve,
+                                loop_back)
+    return copy
 
 
 func connect_input(in_neuron: Neuron, weight: float) -> void:
-	"""Stores a new input connection to the neuron.
-	"""
-	var have_neuron = false
-	for input in input_connections:
-		if input[0].neuron_id == in_neuron.neuron_id:
-			have_neuron = true; break
-	if not have_neuron:
-		input_connections.append([in_neuron, weight])
+    """Stores a new input connection to the neuron.
+    """
+    var have_neuron = false
+    for input in input_connections:
+        if input[0].neuron_id == in_neuron.neuron_id:
+            have_neuron = true; break
+    if not have_neuron:
+        input_connections.append([in_neuron, weight])

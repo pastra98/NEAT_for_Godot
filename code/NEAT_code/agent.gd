@@ -33,46 +33,46 @@ var highlighter
 
 
 func _init(neural_net: NeuralNet, is_leader_clone: bool) -> void:
-	"""Called by genome.generate_agent(), requires a neural network to work.
-	"""
-	network = neural_net
-	# connect the death signal of the body
-	body.connect("death", self, "on_body_death")
-	# make a highlighter only if the NEAT GUI is used
-	if Params.use_gui:
-		highlighter = load("res://NEAT_usability/gui/highlighter.gd").new()
-		body.add_child(highlighter)
-	# Groups are used to hide and show bodies with the GUI
-	body.add_to_group("all_bodies")
-	if is_leader_clone:
-		body.add_to_group("leader_bodies")
+    """Called by genome.generate_agent(), requires a neural network to work.
+    """
+    network = neural_net
+    # connect the death signal of the body
+    body.connect("death", self, "on_body_death")
+    # make a highlighter only if the NEAT GUI is used
+    if Params.use_gui:
+        highlighter = load("res://NEAT_usability/gui/highlighter.gd").new()
+        body.add_child(highlighter)
+    # Groups are used to hide and show bodies with the GUI
+    body.add_to_group("all_bodies")
+    if is_leader_clone:
+        body.add_to_group("leader_bodies")
 
 
 func process_inputs() -> void:
-	"""Gets agent sensory information, feeds it to network, and passes
-	network output to act method of the agent.
-	"""
-	var action = network.update(body.sense())
-	body.act(action)
+    """Gets agent sensory information, feeds it to network, and passes
+    network output to act method of the agent.
+    """
+    var action = network.update(body.sense())
+    body.act(action)
 
 
 func on_body_death() -> void:
-	"""Marks the agent as dead, assigns the fitness, and removes it from all groups
-	"""
-	is_dead = true
-	fitness = body.get_fitness()
-	# remove body from groups to make sure it receives no calls from change_visibility
-	for group in body.get_groups():
-		if group in ["all_bodies", "leader_bodies"]:
-			body.remove_from_group(group)
+    """Marks the agent as dead, assigns the fitness, and removes it from all groups
+    """
+    is_dead = true
+    fitness = body.get_fitness()
+    # remove body from groups to make sure it receives no calls from change_visibility
+    for group in body.get_groups():
+        if group in ["all_bodies", "leader_bodies"]:
+            body.remove_from_group(group)
 
 
 func enable_highlight(enabled: bool) -> void:
-	"""Used to show or hide the highlighter.
-	"""
-	if Params.is_highlighter_enabled:
-		if body != null:
-			if enabled:
-				highlighter.show()
-			else:
-				highlighter.hide()
+    """Used to show or hide the highlighter.
+    """
+    if Params.is_highlighter_enabled:
+        if body != null:
+            if enabled:
+                highlighter.show()
+            else:
+                highlighter.hide()

@@ -25,54 +25,54 @@ signal set_new_threshold
 
 
 func _ready() -> void:
-	"""Checks if initialize() has been called and prints the InfoText
-	"""
-	if old_fitness_threshold == null:
-		push_error("must call initialize() before adding to tree"); breakpoint
-	print($InfoText.text)
+    """Checks if initialize() has been called and prints the InfoText
+    """
+    if old_fitness_threshold == null:
+        push_error("must call initialize() before adding to tree"); breakpoint
+    print($InfoText.text)
 
 
 func initialize(ga: GeneticAlgorithm, old_threshold: float) -> void:
-	"""ga = the current GeneticAlgorithm instance, used to obtain info for InfoText.
-	old_threshold = current fitness threshold, to make sure a higher one will be entered.
-	"""
-	var splash_info_vars = {
-		"best_fit" : ga.curr_best.fitness,
-		"gen" : ga.curr_generation_id,
-		"neurons" : ga.curr_best.neurons.size(),
-		"links" : ga.curr_best.get_enabled_innovs().size(),
-		"num_spec" : ga.curr_species.size(),
-		"avg_fit" : ga.avg_population_fitness
-	}
-	$InfoText.text  = info_text.format(splash_info_vars)
-	old_fitness_threshold = old_threshold
+    """ga = the current GeneticAlgorithm instance, used to obtain info for InfoText.
+    old_threshold = current fitness threshold, to make sure a higher one will be entered.
+    """
+    var splash_info_vars = {
+        "best_fit" : ga.curr_best.fitness,
+        "gen" : ga.curr_generation_id,
+        "neurons" : ga.curr_best.neurons.size(),
+        "links" : ga.curr_best.get_enabled_innovs().size(),
+        "num_spec" : ga.curr_species.size(),
+        "avg_fit" : ga.avg_population_fitness
+    }
+    $InfoText.text  = info_text.format(splash_info_vars)
+    old_fitness_threshold = old_threshold
 
 
 func _on_GoBack_pressed() -> void:
-	"""Return to demo chooser scene.
-	"""
-	get_tree().change_scene("res://demos/demo_loader/DemoLoader.tscn")
+    """Return to demo chooser scene.
+    """
+    get_tree().change_scene("res://demos/demo_loader/DemoLoader.tscn")
 
 
 func _on_Continue_pressed() -> void:
-	"""hide GoBack and Resume buttons, show ThresholdSetter and Confirm button
-	"""
-	$GoBack.hide(); $Resume.hide()
-	$Confirm.show(); $ThresholdSetter.show()
+    """hide GoBack and Resume buttons, show ThresholdSetter and Confirm button
+    """
+    $GoBack.hide(); $Resume.hide()
+    $Confirm.show(); $ThresholdSetter.show()
 
 
 func _on_Confirm_pressed() -> void:
-	"""Ensure that the current LineEdit.text is a valid float that is higher than
-	the previous fitness threshold. Emits signal if valid threshold is entered.
-	"""
-	var set_threshold = $ThresholdSetter.text
-	if set_threshold.is_valid_float():
-		set_threshold = float(set_threshold)
-		if set_threshold > old_fitness_threshold:
-			new_threshold = set_threshold
-			emit_signal("set_new_threshold", new_threshold)
-			queue_free()
-		else:
-			$ThresholdSetter.text = "New Threshold must be > than %s" % old_fitness_threshold
-	else:
-		$ThresholdSetter.text = "Threshold must be a valid float"
+    """Ensure that the current LineEdit.text is a valid float that is higher than
+    the previous fitness threshold. Emits signal if valid threshold is entered.
+    """
+    var set_threshold = $ThresholdSetter.text
+    if set_threshold.is_valid_float():
+        set_threshold = float(set_threshold)
+        if set_threshold > old_fitness_threshold:
+            new_threshold = set_threshold
+            emit_signal("set_new_threshold", new_threshold)
+            queue_free()
+        else:
+            $ThresholdSetter.text = "New Threshold must be > than %s" % old_fitness_threshold
+    else:
+        $ThresholdSetter.text = "Threshold must be a valid float"

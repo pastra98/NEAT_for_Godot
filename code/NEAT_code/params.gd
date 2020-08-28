@@ -208,34 +208,34 @@ enum SPLIT_MEMBERS{from_link, neuron_id, to_link}
 # ---------------------------------------------------------------
 
 func load_config(config_name: String) -> void:
-	"""Loads a config file and resets the properties of Params. Creates a Default
-	config if it doesn't exist based on the settings in this file.
-	"""
-	var file = File.new()
-	var dir = Directory.new()
-	# If no param configs have been saved yet, save the settings from this file as Default
-	if dir.open("user://param_configs") == ERR_INVALID_PARAMETER:
-		dir.make_dir("user://param_configs")
-		save_config("Default")
-	# If a non-default config should be loaded, do so now 
-	if config_name != "Default":
-		# try to open the specified file, break execution if it doesn't exist
-		if file.open("user://param_configs/%s.json" % config_name, File.READ) != OK:
-			push_error("file not found"); breakpoint
-		var configs = parse_json(file.get_as_text())
-		# Using str2var, set the saved properties 
-		for var_name in configs.keys():
-			set(var_name, str2var(configs[var_name]))
+    """Loads a config file and resets the properties of Params. Creates a Default
+    config if it doesn't exist based on the settings in this file.
+    """
+    var file = File.new()
+    var dir = Directory.new()
+    # If no param configs have been saved yet, save the settings from this file as Default
+    if dir.open("user://param_configs") == ERR_INVALID_PARAMETER:
+        dir.make_dir("user://param_configs")
+        save_config("Default")
+    # If a non-default config should be loaded, do so now 
+    if config_name != "Default":
+        # try to open the specified file, break execution if it doesn't exist
+        if file.open("user://param_configs/%s.json" % config_name, File.READ) != OK:
+            push_error("file not found"); breakpoint
+        var configs = parse_json(file.get_as_text())
+        # Using str2var, set the saved properties 
+        for var_name in configs.keys():
+            set(var_name, str2var(configs[var_name]))
 
 func save_config(config_name: String) -> void:
-	"""Saves the current properties in a dict, and saves the values using var2str
-	to allow for saving non-json types like Vector2D and Color. 
-	"""
-	var file = File.new()
-	file.open("user://param_configs/%s.json" % config_name, File.WRITE)
-	var Params_dict = {}
-	for property in get_property_list():
-		if get(property.name) != null:
-			Params_dict[property.name] = var2str(get(property.name))
-	file.store_string(JSON.print(Params_dict, "  "))
-	file.close()
+    """Saves the current properties in a dict, and saves the values using var2str
+    to allow for saving non-json types like Vector2D and Color. 
+    """
+    var file = File.new()
+    file.open("user://param_configs/%s.json" % config_name, File.WRITE)
+    var Params_dict = {}
+    for property in get_property_list():
+        if get(property.name) != null:
+            Params_dict[property.name] = var2str(get(property.name))
+    file.store_string(JSON.print(Params_dict, "  "))
+    file.close()

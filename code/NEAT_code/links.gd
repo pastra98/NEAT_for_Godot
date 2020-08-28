@@ -23,29 +23,29 @@ var is_loop_link: bool
 var enabled = true
 
 func _init(i_id: int,
-		   w: float,
-		   feed_b: bool,
-		   f_neuron: int,
-		   t_neuron: int,
-		   is_looped = false) -> void:
-	"""Create a new link
-	"""
-	innovation_id = i_id
-	weight = w
-	feed_back = feed_b
-	from_neuron_id = f_neuron
-	to_neuron_id = t_neuron
-	is_loop_link = is_looped
+           w: float,
+           feed_b: bool,
+           f_neuron: int,
+           t_neuron: int,
+           is_looped = false) -> void:
+    """Create a new link
+    """
+    innovation_id = i_id
+    weight = w
+    feed_back = feed_b
+    from_neuron_id = f_neuron
+    to_neuron_id = t_neuron
+    is_loop_link = is_looped
 
 
 func copy() -> Link:
-	"""Returns a deep copy of this Link.
-	"""
-	var copy = get_script().new(innovation_id,
-								weight,
-								feed_back,
-								from_neuron_id,
-								to_neuron_id,
-								is_loop_link)
-	copy.enabled = self.enabled
-	return copy
+    """Returns a deep copy of this Link.
+    """
+    var copy = get_script().new(innovation_id,
+                                weight,
+                                feed_back,
+                                from_neuron_id,
+                                to_neuron_id,
+                                is_loop_link)
+    copy.enabled = self.enabled
+    return copy

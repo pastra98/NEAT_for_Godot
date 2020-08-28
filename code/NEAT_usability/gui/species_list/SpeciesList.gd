@@ -23,12 +23,12 @@ onready var ga = get_node("../..")
 var default_label_text = "Displaying Generation: "
 var selected_gen: int
 var default_pop_info = ("[b]Population: %s genomes[/b]\n" +
-						"Current species count: %s\n" +
-						"Fittest species: %s")
+                        "Current species count: %s\n" +
+                        "Fittest species: %s")
 var default_spc_info = ("[b]Species %s info[/b]:\n" +
-						"Mutation rate: %s\n" +
-						"Members: %s\n" +
-						"Avg fitness: %s")
+                        "Mutation rate: %s\n" +
+                        "Members: %s\n" +
+                        "Avg fitness: %s")
 
 # store the species that is currently inspected
 var s_species: Species
@@ -43,86 +43,86 @@ signal on_load_genome
 
 
 func _ready() -> void:
-	"""Generates a new SpeciesList that immediately updates to show current species.
-	"""
-	generation_label.text = default_label_text + str(ga.curr_generation_id) + " (current)"
-	# call loading functions when clicking on species or genome
-	species_list.connect("item_selected", self, "load_species")
-	member_list.connect("item_selected", self, "load_genome")
-	# add the current visibility options to the visibility_menu popup and connect
-	# to ga.change_visibility() method and method that updates text on menu
-	for option in Params.visibility_options:
-		visibility_menu.get_popup().add_item(option)
-	visibility_menu.get_popup().connect("index_pressed", ga, "update_visibility")
-	visibility_menu.get_popup().connect("index_pressed", self, "update_vis_menu_text")
-	update_vis_menu_text(ga.curr_visibility)
-	# show all current species
-	update_species_list()
-	
+    """Generates a new SpeciesList that immediately updates to show current species.
+    """
+    generation_label.text = default_label_text + str(ga.curr_generation_id) + " (current)"
+    # call loading functions when clicking on species or genome
+    species_list.connect("item_selected", self, "load_species")
+    member_list.connect("item_selected", self, "load_genome")
+    # add the current visibility options to the visibility_menu popup and connect
+    # to ga.change_visibility() method and method that updates text on menu
+    for option in Params.visibility_options:
+        visibility_menu.get_popup().add_item(option)
+    visibility_menu.get_popup().connect("index_pressed", ga, "update_visibility")
+    visibility_menu.get_popup().connect("index_pressed", self, "update_vis_menu_text")
+    update_vis_menu_text(ga.curr_visibility)
+    # show all current species
+    update_species_list()
+    
 
 func update_species_list() -> void:
-	"""Gets called when the made_new_gen new gen signal is emitted by the GA node.
-	Updates the list of currently alive species.
-	"""
-	# update the info text about the population.
-	var info_text = default_pop_info % [Params.population_size,
-										ga.curr_species.size(),
-										ga.best_species.species_id]
-	population_info.parse_bbcode(info_text)
-	generation_label.text = default_label_text + str(ga.curr_generation_id)
-	# clear the item list, and clear the dictionary of species
-	species_list.clear()
-	curr_species_dict.clear()
-	var species_index = 0
-	for species in ga.curr_species:
-		if not species.obliterate:
-			curr_species_dict[species_index] = species
-			species_list.add_item("species_" + species.species_id)
-			species_index += 1
-	# also bring the member list of the selected species up to date
-	if s_species != null:
-		update_member_list()
+    """Gets called when the made_new_gen new gen signal is emitted by the GA node.
+    Updates the list of currently alive species.
+    """
+    # update the info text about the population.
+    var info_text = default_pop_info % [Params.population_size,
+                                        ga.curr_species.size(),
+                                        ga.best_species.species_id]
+    population_info.parse_bbcode(info_text)
+    generation_label.text = default_label_text + str(ga.curr_generation_id)
+    # clear the item list, and clear the dictionary of species
+    species_list.clear()
+    curr_species_dict.clear()
+    var species_index = 0
+    for species in ga.curr_species:
+        if not species.obliterate:
+            curr_species_dict[species_index] = species
+            species_list.add_item("species_" + species.species_id)
+            species_index += 1
+    # also bring the member list of the selected species up to date
+    if s_species != null:
+        update_member_list()
 
 
 func load_species(species_list_index: int) -> void:
-	"""Is activated when a species list item is clicked. This method updates the
-	selected species variable and calls update_member_list() to show the member
-	list of the selected species.
-	"""
-	s_species = curr_species_dict[species_list_index]
-	var info_text = default_spc_info % [s_species.species_id,
-										Params.MUTATION_RATE.keys()[s_species.curr_mutation_rate],
-										s_species.alive_members.size(),
-										s_species.avg_fitness]
-	species_info.parse_bbcode(info_text)
-	update_member_list()
+    """Is activated when a species list item is clicked. This method updates the
+    selected species variable and calls update_member_list() to show the member
+    list of the selected species.
+    """
+    s_species = curr_species_dict[species_list_index]
+    var info_text = default_spc_info % [s_species.species_id,
+                                        Params.MUTATION_RATE.keys()[s_species.curr_mutation_rate],
+                                        s_species.alive_members.size(),
+                                        s_species.avg_fitness]
+    species_info.parse_bbcode(info_text)
+    update_member_list()
 
 
 func update_member_list() -> void:
-	"""This method updates the items of the members list of a species.
-	"""
-	# prevent updating a species that doesn't exist anymore
-	if s_species == null:
-		return
-	# clear the item list and clear the members dictionary
-	member_list.clear()
-	s_species_members.clear()
-	var member_index = 0
-	for member in s_species.alive_members:
-		s_species_members[member_index] = member
-		member_list.add_item("genome_" + str(member.genome_id))
-		member_index += 1
+    """This method updates the items of the members list of a species.
+    """
+    # prevent updating a species that doesn't exist anymore
+    if s_species == null:
+        return
+    # clear the item list and clear the members dictionary
+    member_list.clear()
+    s_species_members.clear()
+    var member_index = 0
+    for member in s_species.alive_members:
+        s_species_members[member_index] = member
+        member_list.add_item("genome_" + str(member.genome_id))
+        member_index += 1
 
 
 func load_genome(member_list_index: int) -> void:
-	"""Called when a species member is clicked. Emits load genome signal, causing
-	the NeatGUI node to open a new genome detail.
-	"""
-	var selected_genome = s_species_members[member_list_index]
-	emit_signal("on_load_genome", selected_genome)
+    """Called when a species member is clicked. Emits load genome signal, causing
+    the NeatGUI node to open a new genome detail.
+    """
+    var selected_genome = s_species_members[member_list_index]
+    emit_signal("on_load_genome", selected_genome)
 
 
 func update_vis_menu_text(index: int) -> void:
-	"""Updates the current visibility text if a different visibility option is chosen.
-	"""
-	visibility_menu.text = "curr visibility: " + Params.visibility_options[index]
+    """Updates the current visibility text if a different visibility option is chosen.
+    """
+    visibility_menu.text = "curr visibility: " + Params.visibility_options[index]
