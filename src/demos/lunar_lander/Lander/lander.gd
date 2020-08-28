@@ -56,8 +56,6 @@ func _ready() -> void:
     $RightCast.enabled = false
 
 
-# ---------- FUNCTIONS REQUIRED BY NEAT
-
 func sense() -> Array:
     """Returns an array containing information about the crafts current state,
     used to feed the neural network.
