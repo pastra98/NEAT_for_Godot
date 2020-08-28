@@ -1,6 +1,24 @@
-# NEAT_for_Godot
+# NEAT for Godot
 ## WORK IN PROGRESS- A proper readme, a wiki, a video and a binary will be added soon
-An implementation of Kenneth O. Stanley's NEAT Algorithm for the Godot game engine, written in gdscript.
+An implementation of Kenneth O. Stanley's NEAT Algorithm for the Godot game engine,
+written in gdscript. This code is intended to be easily integrable into godot
+projects where the programmer wants to use neural networks to control agents.
+
+Tested for godot 3.2.2
+
+## I just want to run the demos!
+If you are not already using godot, I strongly recommend giving it a try, the download
+page is [here](https://godotengine.org/download/). The binary is tiny (~61 mb)
+and a portable install. It includes everything needed to run/edit the demos, or
+even making your own games. Just import the project.godot file, and it should work.
+
+However I have compiled binaries (the windows one is currently bugged, will fix this
+soon), which you can find
+[here](https://github.com/pastra98/NEAT_for_Godot/releases/tag/v1.0).
+Though I sincerely recommend running it in the editor for the reasons listed in the release.
+
+## How can I use this for my project?
+I'm currently writing the wiki on that.
 
 ## credits
 The NEAT algorithm was originally conceived by
