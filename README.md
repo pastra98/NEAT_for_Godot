@@ -19,6 +19,7 @@ Though I sincerely recommend running it in the editor for the reasons listed in 
 
 ## How can I use this for my project?
 I'm currently writing the wiki on that.
+[first page is in the process of being written](https://github.com/pastra98/NEAT_for_Godot/wiki/How-do-I-use-this-for-my-own-project%3F)
 
 ## credits
 The NEAT algorithm was originally conceived by
