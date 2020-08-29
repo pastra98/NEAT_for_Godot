@@ -1,4 +1,6 @@
 # ignore godot import folder
 .import/
+# ignore windows icons
+src/icon.ico
 # ignore my vscode setup
 src/.vscode/
