@@ -1,0 +1,4 @@
+# ignore godot import folder
+.import/
+# ignore my vscode setup
+src/.vscode/
