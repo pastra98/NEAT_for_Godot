@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://demos/lunar_lander/Environment/moon_texture.jpg" type="Texture" id=1]
+[ext_resource path="res://demos/lunar_lander/environment/moon_texture.jpg" type="Texture" id=1]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 1351.53, 10.2936 )
