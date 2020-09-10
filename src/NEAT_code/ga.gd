@@ -50,7 +50,7 @@ func _init(number_inputs: int,
            number_outputs: int,
            body_path: String,
            use_gui = true,
-           custom_Params_name = "Default") -> void:
+           custom_params_name = "Default") -> void:
     """Sets the undefined members of the Params Singleton according to the options
     in the constructor. Body path refers to the filepath for the agents body.
     Loads Params configuration if custom_Params_name is given. Creates the first
@@ -59,7 +59,7 @@ func _init(number_inputs: int,
     # set the name of the node that contains GeneticAlgorithm Object
     set_name("ga")
     # load the specified Params file
-    Params.load_config(custom_Params_name)
+    Params.load_config(custom_params_name)
     # save all specified parameters in the Params singleton
     Params.num_inputs = number_inputs
     Params.num_outputs = number_outputs
