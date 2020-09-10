@@ -31,7 +31,7 @@
   "prob_weight_mut": "[ 0.05, 0.08 ]",
   "prob_activation_mut": "[ 0.03, 0.05 ]",
   "max_neuron_amt": "100",
-  "prevent_chaining": "true",
+  "prevent_chaining": "false",
   "chain_threshold": "2",
   "num_tries_find_link": "10",
   "w_range": "1.0",
