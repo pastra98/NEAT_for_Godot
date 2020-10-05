@@ -6,7 +6,9 @@ projects where the programmer wants to use neural networks to control agents.
 Tested for godot 3.2.2
 
 ## How can I use this for my project?
-Please refer to 
+I have created a [wiki](https://github.com/pastra98/NEAT_for_Godot/wiki)
+with lot's of information on how NEAT works, and details about this implementation.
+If you want to dive straight into implementing this yourself, refer to the
 [first page](https://github.com/pastra98/NEAT_for_Godot/wiki/How-do-I-use-this-for-my-own-project%3F)
 of the wiki.
 
