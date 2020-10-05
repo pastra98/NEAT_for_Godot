@@ -55,4 +55,4 @@ JRob774 on opengameart -
 - The car script is based off Ivan Skodje's 2d vehicle controller project -
 [link](github.com/ivanskodje-godotengine/Vehicle-Controller-2D)
 
-### Every other asset was made by me
+### Every other asset was made by myself
