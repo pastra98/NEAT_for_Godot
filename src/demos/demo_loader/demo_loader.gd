@@ -35,7 +35,6 @@ func load_lander_scene() -> void:
     dir.copy("res://demos/lunar_lander/lander_params.json",
              "user://param_configs/lander_params.json")
     get_tree().change_scene("res://demos/lunar_lander/LanderMain.tscn")
-    pass
 
 
 func load_xor_scene() -> void:
