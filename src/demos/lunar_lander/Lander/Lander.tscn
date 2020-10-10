@@ -1,10 +1,10 @@
 [gd_scene load_steps=37 format=2]
 
-[ext_resource path="res://demos/lunar_lander/lander/lander.gd" type="Script" id=1]
-[ext_resource path="res://demos/lunar_lander/lander/lander.png" type="Texture" id=2]
-[ext_resource path="res://demos/lunar_lander/lander/fire.png" type="Texture" id=3]
-[ext_resource path="res://demos/lunar_lander/lander/explosion.png" type="Texture" id=4]
-[ext_resource path="res://demos/lunar_lander/lander/flag.png" type="Texture" id=5]
+[ext_resource path="res://demos/lunar_lander/Lander/lander.gd" type="Script" id=1]
+[ext_resource path="res://demos/lunar_lander/Lander/lander.png" type="Texture" id=2]
+[ext_resource path="res://demos/lunar_lander/Lander/fire.png" type="Texture" id=3]
+[ext_resource path="res://demos/lunar_lander/Lander/explosion.png" type="Texture" id=4]
+[ext_resource path="res://demos/lunar_lander/Lander/flag.png" type="Texture" id=5]
 
 
 
