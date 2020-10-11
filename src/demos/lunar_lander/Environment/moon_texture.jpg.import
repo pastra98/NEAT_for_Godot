@@ -9,7 +9,7 @@ metadata={
 
 [deps]
 
-source_file="res://demos/lunar_lander/environment/moon_texture.jpg"
+source_file="res://demos/lunar_lander/Environment/moon_texture.jpg"
 dest_files=[ "res://.import/moon_texture.jpg-70849e135b4d26674476548c4887335e.stex" ]
 
 [params]

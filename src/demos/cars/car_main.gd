@@ -20,7 +20,7 @@ var time_step = 0.2
 var generation_step = 15
 
 # path to the car scene that will be controlled by the AI
-var agent_body_path = "res://demos/cars/Car/Car.tscn"
+var agent_body_path = "res://demos/cars/car/Car.tscn"
 # initialize the main node that handles the genetic algorithm with 11 inputs, 4 outputs
 # the path to the car scene, enable the NEAT_Gui, and use the car_params parameters, which
 # are saved under user://param_configs
