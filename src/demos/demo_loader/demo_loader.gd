@@ -40,6 +40,6 @@ func load_lander_scene() -> void:
 func load_xor_scene() -> void:
     """Copy XOR params to user://param_configs/ and switch to XOR scene.
     """
-    dir.copy("res://demos/xor/xor_params2.json",
-             "user://param_configs/xor_params2.json")
+    dir.copy("res://demos/xor/xor_params.json",
+             "user://param_configs/xor_params.json")
     get_tree().change_scene("res://demos/xor/XorMain.tscn")
