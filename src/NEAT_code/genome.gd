@@ -41,6 +41,8 @@ func mutate(mutation_rate: int) -> void:
         add_loop_link()
     if Utils.random_f() < Params.prob_direct_link[mutation_rate]:
         add_direct_link()
+    if Utils.random_f() < Params.prob_disable_link[mutation_rate] and not links.empty():
+        disable_link()
     if Utils.random_f() < Params.prob_add_neuron[mutation_rate] and not links.empty():
         add_neuron()
     mutate_weights(mutation_rate)
@@ -58,8 +60,9 @@ func add_link() -> void:
         var from: Neuron = Utils.random_choice(neurons.values())
         var to: Neuron = Utils.random_choice(neurons.values())
         # Neuron 2 should not be input(0) or bias(1) -> don't connect two inputs or bias.
-        # Also don't produce a loop_back link.
-        if not (to == from or to.neuron_type in [0, 1]):
+        # Also don't produce a loop_back link, and if enabled, prevent feed-back links
+        if (not (to == from or to.neuron_type in [0, 1]) and
+            not (Params.no_feed_back and to.position.x < from.position.x)):
             # get the innovation id of this link, prevent adding duplicate links
             var innov_id = Innovations.check_new_link(from.neuron_id, to.neuron_id)
             # check if the link has already been made
@@ -117,6 +120,16 @@ func add_direct_link() -> void:
                                     input_neuron.neuron_id,
                                     output_neuron.neuron_id)
             links[innov_id] = new_link
+            return
+
+
+func disable_link() -> void:
+    """Disables a link that is currently enabled.
+    """
+    for _try in Params.num_tries_find_link:
+        var link_to_disable = Utils.random_choice(links.values())
+        if link_to_disable.enabled:
+            link_to_disable.enabled = false
             return
 
 
@@ -273,6 +286,7 @@ func crossover(mate: Genome, g_id: int) -> Genome:
                 baby_neurons[to_id] = dominant_genome.neurons[to_id].copy()
             # finally add the link
             baby_links[link_id] = new_link
+    # make a new baby by calling the constructor of this class using get_script()
     var baby = get_script().new(g_id,
                                 baby_neurons,
                                 baby_links)
