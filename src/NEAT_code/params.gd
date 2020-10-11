@@ -108,6 +108,12 @@ var chain_threshold = 3
 var num_tries_find_link = 10
 # range in which new weights should be initialized
 var w_range = 1.0
+# disable mutations that produce feed back links
+var no_feed_back = false
+
+# ----- disabling links
+# probability of disabling a single link per mutation
+var prob_disable_link = [0.1, 0.2]
 
 # ----- mutating link weights
 # completely changes weight. This can only happen if the the probability of a
