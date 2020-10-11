@@ -120,13 +120,14 @@ func create_initial_population() -> Array:
         # copy every input and output neuron for a new genome
         for neuron_id in all_neurons.keys(): 
             neurons[neuron_id] = all_neurons[neuron_id].copy()
-        # create a number of random initial links (or less), based on parameter
-        for _link in Params.num_initial_links:
+        # count how many links are added
+        var links_added = 0
+        while links_added <= Params.num_initial_links:
             # pick some random neuron id's from both input and output
             var from_neuron_id = Utils.random_choice(input_neurons.keys())
             var to_neuron_id = Utils.random_choice(output_neurons.keys())
             # don't add a link that connects to a bias neuron in the first gen
-            if neurons[from_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
+            if neurons[to_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
                 # Innovations returns either an existing or new id
                 var innov_id = Innovations.check_new_link(from_neuron_id, to_neuron_id)
                 # prevent adding duplicates
@@ -138,6 +139,7 @@ func create_initial_population() -> Array:
                                             to_neuron_id)
                     # add the new link to the genome
                     links[innov_id] = new_link
+                    links_added += 1
         # increase genome counter, create a new genome
         curr_genome_id += 1
         var new_genome = Genome.new(curr_genome_id,
@@ -171,6 +173,9 @@ func create_initial_population() -> Array:
     # return all new genomes 
     return initial_genomes
 
+################################################################################
+var first_elite: Genome
+################################################################################
 
 func next_generation() -> void:
     """Gets called once for every new generation. Kills all agents, updates the
@@ -207,6 +212,10 @@ func next_generation() -> void:
             if not spawned_elite:
                 baby = species.elite_spawn(curr_genome_id)
                 spawned_elite = true
+################################################################################
+                if num_spawned == 0:
+                    first_elite = baby
+################################################################################
             # if less than 2 members in spec., crossover cannot be performed
             # there is also asex_prob, which might result in an asex baby
             elif species.pool.size() < 2 or Utils.random_f() < Params.asex_prob:
