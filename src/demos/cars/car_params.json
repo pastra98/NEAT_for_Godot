@@ -34,6 +34,8 @@
   "chain_threshold": "3",
   "num_tries_find_link": "10",
   "w_range": "1.0",
+  "no_feed_back": "false",
+  "prob_disable_link": "[ 0.0, 0.0 ]",
   "prob_weight_replaced": "[ 0.06, 0.15 ]",
   "weight_shift_deviation": "0.4",
   "activation_shift_deviation": "0.3",
