@@ -35,13 +35,20 @@ var paused = false
 func _ready() -> void:
     """Add ga node to tree, load the first genome into the detail window.
     """
-    # add the ga node and it's currently active xor bodies to the scene
-    add_child(ga)
-    place_testers(ga.get_curr_bodies())
-    # add the genome detail to the tree, place it roughly in the center of the screen
-    genome_detail.inspected_genome = ga.curr_best
-    add_child(genome_detail)
-    genome_detail.rect_position = rect_size / 3.5
+    # # add the ga node and it's currently active xor bodies to the scene
+    # add_child(ga)
+    # place_testers(ga.get_curr_bodies())
+    # # add the genome detail to the tree, place it roughly in the center of the screen
+    # genome_detail.inspected_genome = ga.curr_best
+    # add_child(genome_detail)
+    # genome_detail.rect_position = rect_size / 3.5
+################################################################################
+    paused = true
+    test_network("best_xor")
+    # genome_detail.inspected_genome = ga.curr_best
+    # add_child(genome_detail)
+    # genome_detail.rect_position = rect_size / 3.5
+################################################################################
 
 
 func _process(_delta):
@@ -124,6 +131,7 @@ func test_network(network_name: String) -> void:
         var test_result = "\n For the inputs %s the network computed an output of %s"
         print(test_result % [test, output[0]])
     print("\n Network Test completed!")
+    breakpoint
 
 
 func continue_ga(new_threshold) -> void:
