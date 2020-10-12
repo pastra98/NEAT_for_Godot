@@ -45,9 +45,6 @@ func _ready() -> void:
 ################################################################################
     paused = true
     test_network("best_xor")
-    # genome_detail.inspected_genome = ga.curr_best
-    # add_child(genome_detail)
-    # genome_detail.rect_position = rect_size / 3.5
 ################################################################################
 
 
@@ -131,7 +128,6 @@ func test_network(network_name: String) -> void:
         var test_result = "\n For the inputs %s the network computed an output of %s"
         print(test_result % [test, output[0]])
     print("\n Network Test completed!")
-    breakpoint
 
 
 func continue_ga(new_threshold) -> void:
