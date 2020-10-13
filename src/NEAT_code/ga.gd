@@ -122,7 +122,7 @@ func create_initial_population() -> Array:
             neurons[neuron_id] = all_neurons[neuron_id].copy()
         # count how many links are added
         var links_added = 0
-        while links_added <= Params.num_initial_links:
+        while links_added < Params.num_initial_links:
             # pick some random neuron id's from both input and output
             var from_neuron_id = Utils.random_choice(input_neurons.keys())
             var to_neuron_id = Utils.random_choice(output_neurons.keys())

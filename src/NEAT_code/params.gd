@@ -82,6 +82,8 @@ var default_curve = 2.0
 var prob_add_neuron = [0.05, 0.15]
 # probabilities of adding a link between random neurons in mutation func
 var prob_add_link = [0.1, 0.3]
+# probability of disabling a single link per mutation
+var prob_disable_link = [0.1, 0.2]
 # probabilities of adding a looping link (link that connects neuron to itself)
 var prob_loop_link = [0.03, 0.1]
 # probabilities of adding a direct link (link that directly connects input to output
@@ -110,10 +112,6 @@ var num_tries_find_link = 10
 var w_range = 1.0
 # disable mutations that produce feed back links
 var no_feed_back = false
-
-# ----- disabling links
-# probability of disabling a single link per mutation
-var prob_disable_link = [0.1, 0.2]
 
 # ----- mutating link weights
 # completely changes weight. This can only happen if the the probability of a
