@@ -65,11 +65,6 @@ func load_config(network_name: String) -> void:
     file.close()
     # required to access neurons easily when making connections
     var temp_neurons = {}
-    # since the bias always outputs 1, it's parameters are irrelevant
-    bias = StandaloneNeuron.new(1, 1)
-    bias.output = 1
-    # use floats as key, because parse_json only returns floats.
-    temp_neurons[1.0] = bias
     # generate Neurons and put them into appropriate arrays
     for n in network_data["neurons"]:
         var neuron = StandaloneNeuron.new(int(n["id"]), n["curve"])
@@ -77,6 +72,10 @@ func load_config(network_name: String) -> void:
         match int(n["type"]):
             NEURON_TYPE.input:
                 inputs.append(neuron)
+            NEURON_TYPE.bias:
+                # since the bias always outputs 1, it's parameters are irrelevant
+                bias = neuron
+                bias.output = 1
             NEURON_TYPE.hidden:
                 hiddens.append(neuron)
             NEURON_TYPE.output:
