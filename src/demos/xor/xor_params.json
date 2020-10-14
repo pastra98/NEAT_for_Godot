@@ -26,7 +26,7 @@
   "default_curve": "5.0",
   "prob_add_neuron": "[ 0.05, 0.1 ]",
   "prob_add_link": "[ 0.1, 0.2 ]",
-  "prob_disable_link": "[ 0.05, 0.1 ]",
+  "prob_disable_link": "[ 0.0, 0.0 ]",
   "prob_loop_link": "[ 0.0, 0.0 ]",
   "prob_direct_link": "[ 0.0, 0.0 ]",
   "prob_weight_mut": "[ 0.6, 0.8 ]",
