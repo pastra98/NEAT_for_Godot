@@ -145,22 +145,27 @@ func create_initial_population() -> Array:
         var new_genome = Genome.new(curr_genome_id,
                                     neurons,
                                     links)
-        # the comp_score is used to check relatedness to other species such that
-        # a new genome can be assigned to a species, or a new species is created
-        var comp_score = Params.species_boundary + 1
-        var found_species: Species
-        # first try to find the species to which the genome is closest to
-        for species in curr_species:
-            if new_genome.get_compatibility_score(species.representative) < comp_score:
-                comp_score = new_genome.get_compatibility_score(species.representative)
-                found_species = species
-        if comp_score < Params.species_boundary:
-            found_species.add_member(new_genome)
-        # if none was found, create a new species, and assign this genome as repres.
-        else:
-            var diverged_species = make_new_species()
-            diverged_species.add_member(new_genome)
-            diverged_species.representative = new_genome
+################################################################################
+        find_species(new_genome)
+################################################################################
+################################################################################
+        # # the comp_score is used to check relatedness to other species such that
+        # # a new genome can be assigned to a species, or a new species is created
+        # var comp_score = Params.species_boundary + 1
+        # var found_species: Species
+        # # first try to find the species to which the genome is closest to
+        # for species in curr_species:
+        # 	if new_genome.get_compatibility_score(species.representative) < comp_score:
+        # 		comp_score = new_genome.get_compatibility_score(species.representative)
+        # 		found_species = species
+        # if comp_score < Params.species_boundary:
+        # 	found_species.add_member(new_genome)
+        # # if none was found, create a new species, and assign this genome as repres.
+        # else:
+        # 	var diverged_species = make_new_species(new_genome)
+        # 	diverged_species.add_member(new_genome)
+        # 	diverged_species.representative = new_genome
+################################################################################
         # set last genome and species to be best species and genome, to allow
         # for comparison later
         curr_best = initial_genomes.back()
@@ -225,9 +230,14 @@ func next_generation() -> void:
                 baby = species.mate_spawn(curr_genome_id)
             # check if baby should speciate away from it's current species
             if baby.get_compatibility_score(species.representative) > Params.species_boundary:
-                var diverged_species = make_new_species()
-                diverged_species.add_member(baby)
-                diverged_species.representative = baby
+################################################################################
+                find_species(baby)
+################################################################################
+################################################################################
+                # var diverged_species = make_new_species()
+                # diverged_species.add_member(baby)
+                # diverged_species.representative = baby
+################################################################################
             # If the baby is still within the species of it's parents, add it as member
             else:
                 species.add_member(baby)
@@ -248,14 +258,32 @@ func next_generation() -> void:
     is_first_timestep = true
 
 
-func make_new_species() -> Species:
+################################################################################
+func find_species(new_genome: Genome):
+    var found_species: Species
+    var comp_score = Params.species_boundary
+    # try to find the species to which the genome is closest to
+    for species in curr_species:
+        if new_genome.get_compatibility_score(species.representative) < comp_score:
+            comp_score = new_genome.get_compatibility_score(species.representative)
+            found_species = species
+    # new genome matches no current species -> make a new one
+    if typeof(found_species) == TYPE_NIL:
+        found_species = make_new_species(new_genome)
+        found_species.representative = new_genome
+    # add the new genome as a member to the found species
+    found_species.add_member(new_genome)
+################################################################################
+
+
+func make_new_species(founding_member: Genome) -> Species:
     """Generates a new species with a unique id, adds it to curr_species and returns it.
     """
     num_new_species += 1
-    var new_species_id = str(curr_generation_id) + "_" + str(curr_genome_id)
-    var diverged_species = Species.new(new_species_id)
-    curr_species.append(diverged_species)
-    return diverged_species
+    var new_species_id = str(curr_generation_id) + "_" + str(founding_member.genome_id)
+    var new_species = Species.new(new_species_id)
+    curr_species.append(new_species)
+    return new_species
 
 
 func next_timestep() -> void:
@@ -354,7 +382,7 @@ func make_hybrids(num_to_spawn: int) -> Array:
             var dad_score =  baby.get_compatibility_score(dad)
             # make a new species if it matches none of the parents
             if mom_score > Params.species_boundary and dad_score > Params.species_boundary:
-                var diverged_species = make_new_species()
+                var diverged_species = make_new_species(baby)
                 diverged_species.add_member(baby)
                 diverged_species.representative = baby
             # baby has a score closer to mom than to dad
