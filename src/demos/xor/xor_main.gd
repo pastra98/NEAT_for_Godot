@@ -25,7 +25,7 @@ onready var ga = GeneticAlgorithm.new(2, 1, agent_body_path, false, "xor_params"
 onready var genome_detail = load("res://NEAT_usability/gui/genome_detail/GenomeDetail.tscn").instance()
 
 # the maximum score that can be reached is 4. 1 fitness point per solved xor
-var fitness_threshold = 3.99
+var fitness_threshold = 3.9
 # A splash screen on how to continue after reaching fitness threshold
 onready var DemoCompletedSplash = preload("res://demos/demo_loader/DemoCompletedSplash.tscn")
 # While the splashscreen is open, do not continue the genetic algorithm
