@@ -35,6 +35,8 @@ var avg_fitness = 0.0
 var best_ever_fitness = 0.0
 # should this species be purged?
 var obliterate = false
+# The amount of offspring to be spawned in the next generation
+var num_to_spawn = 0
 
 # if the species doesn't improve for Params.enough_gens_to_change_things, the rates
 # of mutations change to their second (heightened) value. this changes back if the
@@ -51,7 +53,7 @@ func _init(id: String) -> void:
     species_id = id
 
 
-func update_species() -> float:
+func update() -> float:
     """Checks if the species continues to survive into the next generation. If so,
     the total fitness of the species is calculated and adjusted according to the age
     bonus of the species. It's members are ranked according to their fitness, and
@@ -69,6 +71,7 @@ func update_species() -> float:
     # species can go into the next generation
     else:
         spawn_count = 0
+        num_to_spawn = 0
         age += 1
         # first sort the alive members, and determine the fittest member
         alive_members.sort_custom(self, "sort_by_fitness")
@@ -96,14 +99,14 @@ func update_species() -> float:
         else:
             pool = alive_members
         # calculate the adjusted average fitness of this species
-        avg_fitness = adjust_fitnesses()
+        avg_fitness = get_adjusted_avg_fitness()
         # reassign alive members to a new empty array, so new agents can be placed
         # in the next gen. Clearing it also clear the pool, since pool is a reference.
         alive_members = []
         return avg_fitness
         
 
-func adjust_fitnesses() -> float:
+func get_adjusted_avg_fitness() -> float:
     """Adjusts the fitness of every alive_member according to its age and
     reduce it proportionately to num of relatives. Then return the average
     fitness of the entire species, which is needed to calculate the population
@@ -120,18 +123,15 @@ func adjust_fitnesses() -> float:
     return (total_adjusted_fitness / alive_members.size())
 
 
-func calculate_offspring_amount(total_avg_species_fitness) -> int:
+func calculate_offspring_amount(total_avg_species_fitness) -> void:
     """This func does not care about the fitness of individual members. It
     calculates the total spawn tickets allotted to this species by comparing
     how fit this species is relative to all other species, and multiplying this
     result with the total population size.
     """
-    # prevent newly added species from producing offspring
-    if age == 0:
-        return 0
-    else:
-        var offspr = round((avg_fitness / total_avg_species_fitness) * Params.population_size)
-        return offspr
+    # prevent species added in the current gen from producing offspring
+    if age != 0:
+        num_to_spawn = round((avg_fitness / total_avg_species_fitness) * Params.population_size)
 
 
 func add_member(new_genome) -> void:
