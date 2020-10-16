@@ -25,7 +25,7 @@ onready var ga = GeneticAlgorithm.new(2, 1, agent_body_path, false, "xor_params"
 onready var genome_detail = load("res://NEAT_usability/gui/genome_detail/GenomeDetail.tscn").instance()
 
 # the maximum score that can be reached is 4. 1 fitness point per solved xor
-var fitness_threshold = 3.999
+var fitness_threshold = 3.9
 # A splash screen on how to continue after reaching fitness threshold
 onready var DemoCompletedSplash = preload("res://demos/demo_loader/DemoCompletedSplash.tscn")
 # While the splashscreen is open, do not continue the genetic algorithm
@@ -42,6 +42,10 @@ func _ready() -> void:
     genome_detail.inspected_genome = ga.curr_best
     add_child(genome_detail)
     genome_detail.rect_position = rect_size / 3.5
+################################################################################
+    # paused = true
+    # test_network("best_xor")
+################################################################################
 
 
 func _process(_delta):
@@ -59,11 +63,24 @@ func _process(_delta):
         elif ga.all_agents_dead:
             # show the best genome from prev generation and start next gen
             genome_detail.update_inspected_genome(ga.curr_best)
+################################################################################
+            # var past_gen_best = ga.curr_best
+            # var past_gen_elite = ga.curr_best
+            # if ga.curr_generation > 1:
+            # 	past_gen_elite = ga.first_elite
+            # 	# past_gen_best = ga.curr_species.front().leader
+            # 	# genome_detail.update_inspected_genome(past_gen_best)
+            # 	genome_detail.update_inspected_genome(past_gen_elite)
+################################################################################
             ga.next_generation()
             place_testers(ga.get_curr_bodies())
             # update the info text, and print the same info to the console
             var info_text = "generation: %s \n best fitness: %s \n number species: %s"
-            var info_vars = [ga.curr_generation_id, ga.curr_best.fitness, ga.curr_species.size()]
+            var info_vars = [ga.curr_generation, ga.curr_best.fitness, ga.curr_species.size()]
+################################################################################
+            # # var info_vars = [ga.curr_generation, past_gen_best.fitness, ga.curr_species.size()]
+            # var info_vars = [ga.curr_generation, past_gen_elite.fitness, ga.curr_species.size()]
+################################################################################
             $Info.text = info_text % info_vars
             print(info_text % info_vars)
 

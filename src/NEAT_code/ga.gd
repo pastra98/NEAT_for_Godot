@@ -11,7 +11,7 @@ within this directory.
 # curr_genome_id gets incremented for every new genome
 var curr_genome_id = 0
 # the current generation, starting with 1
-var curr_generation_id = 1
+var curr_generation = 1
 # the average fitness of every currently alive genome
 var avg_population_fitness = 0
 # total of all average species fitnesses, used to calculate the spawn amount per species
@@ -120,13 +120,14 @@ func create_initial_population() -> Array:
         # copy every input and output neuron for a new genome
         for neuron_id in all_neurons.keys(): 
             neurons[neuron_id] = all_neurons[neuron_id].copy()
-        # create a number of random initial links (or less), based on parameter
-        for _link in Params.num_initial_links:
+        # count how many links are added
+        var links_added = 0
+        while links_added < Params.num_initial_links:
             # pick some random neuron id's from both input and output
             var from_neuron_id = Utils.random_choice(input_neurons.keys())
             var to_neuron_id = Utils.random_choice(output_neurons.keys())
             # don't add a link that connects to a bias neuron in the first gen
-            if neurons[from_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
+            if neurons[to_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
                 # Innovations returns either an existing or new id
                 var innov_id = Innovations.check_new_link(from_neuron_id, to_neuron_id)
                 # prevent adding duplicates
@@ -138,27 +139,16 @@ func create_initial_population() -> Array:
                                             to_neuron_id)
                     # add the new link to the genome
                     links[innov_id] = new_link
+                    links_added += 1
         # increase genome counter, create a new genome
         curr_genome_id += 1
         var new_genome = Genome.new(curr_genome_id,
                                     neurons,
                                     links)
-        # the comp_score is used to check relatedness to other species such that
-        # a new genome can be assigned to a species, or a new species is created
-        var comp_score = Params.species_boundary + 1
-        var found_species: Species
-        # first try to find the species to which the genome is closest to
-        for species in curr_species:
-            if new_genome.get_compatibility_score(species.representative) < comp_score:
-                comp_score = new_genome.get_compatibility_score(species.representative)
-                found_species = species
-        if comp_score < Params.species_boundary:
-            found_species.add_member(new_genome)
-        # if none was found, create a new species, and assign this genome as repres.
-        else:
-            var diverged_species = make_new_species()
-            diverged_species.add_member(new_genome)
-            diverged_species.representative = new_genome
+        # try to find a species to which the new genome is similar. If no existing
+        # species is compatible with the genome, a new species is made and returned
+        var found_species = find_species(new_genome)
+        found_species.add_member(new_genome)
         # set last genome and species to be best species and genome, to allow
         # for comparison later
         curr_best = initial_genomes.back()
@@ -171,6 +161,9 @@ func create_initial_population() -> Array:
     # return all new genomes 
     return initial_genomes
 
+################################################################################
+var first_elite: Genome
+################################################################################
 
 func next_generation() -> void:
     """Gets called once for every new generation. Kills all agents, updates the
@@ -181,32 +174,40 @@ func next_generation() -> void:
     interactions between the entity that lives in the simulated world, and the
     neural network that is coded for by the genome.
     """
-    # extract genomes from current agents, then kill them, clear agent array
+    # assign the fitness stored in the agent to the genome, then clear the agent array
     finish_current_agents()
-    # get the currently alive species, and update the avg_population_fitness
-    prepare_old_species()
+    # Get updated list of species that survived into the next generation, and update
+    # their spawn amounts based on fitness
+    curr_species = update_curr_species()
     # print some info about the last generation
     if Params.print_new_generation:
         print_status()
+    # keep track of new species, increment generation counter
     num_new_species = 0
-    curr_generation_id += 1
+    curr_generation += 1
+    # the array containing all new genomes that will be spawned
     var new_genomes = []
+    # keep track of spawned genomes, to not exceed population size
     var num_spawned = 0
     for species in curr_species:
-        var num_to_spawn = species.calculate_offspring_amount(total_avg_species_fitness)
-        # Don't exceed population size
+        # reduce num_to_spawn if it would exceed population size
         if num_spawned == Params.population_size:
             break
-        elif num_spawned + num_to_spawn > Params.population_size:
-            num_to_spawn = Params.population_size - num_spawned
+        elif num_spawned + species.num_to_spawn > Params.population_size:
+            species.num_to_spawn = Params.population_size - num_spawned
         # Elitism: best member of each species gets copied w.o. mutation
         var spawned_elite = false
-        for spawn in num_to_spawn:
+        # spawn all the new members of a species
+        for spawn in species.num_to_spawn:
             var baby: Genome
             # first clone the species leader for elitism
             if not spawned_elite:
                 baby = species.elite_spawn(curr_genome_id)
                 spawned_elite = true
+################################################################################
+                if num_spawned == 0:
+                    first_elite = baby
+################################################################################
             # if less than 2 members in spec., crossover cannot be performed
             # there is also asex_prob, which might result in an asex baby
             elif species.pool.size() < 2 or Utils.random_f() < Params.asex_prob:
@@ -216,11 +217,12 @@ func next_generation() -> void:
                 baby = species.mate_spawn(curr_genome_id)
             # check if baby should speciate away from it's current species
             if baby.get_compatibility_score(species.representative) > Params.species_boundary:
-                var diverged_species = make_new_species()
-                diverged_species.add_member(baby)
-                diverged_species.representative = baby
-            # If the baby is still within the species of it's parents, add it as member
+                # if the baby is too different, find an existing species to change
+                # into. If no compatible species is found, a new one is made and returned
+                var found_species = find_species(baby)
+                found_species.add_member(baby)
             else:
+                # If the baby is still within the species of it's parents, add it as member
                 species.add_member(baby)
             curr_genome_id += 1
             num_spawned += 1
@@ -239,14 +241,33 @@ func next_generation() -> void:
     is_first_timestep = true
 
 
-func make_new_species() -> Species:
-    """Generates a new species with a unique id, adds it to curr_species and returns it.
+func find_species(new_genome: Genome) -> Species:
     """
+    """
+    var found_species: Species
+    # try to find an existing species to which the genome is close enough to be a member
+    var comp_score = Params.species_boundary
+    for species in curr_species:
+        if new_genome.get_compatibility_score(species.representative) < comp_score:
+            comp_score = new_genome.get_compatibility_score(species.representative)
+            found_species = species
+    # new genome matches no current species -> make a new one
+    if typeof(found_species) == TYPE_NIL:
+        found_species = make_new_species(new_genome)
+    # return the species, whether it is new or not
+    return found_species
+
+
+func make_new_species(founding_member: Genome) -> Species:
+    """Generates a new species with a unique id, assigns the founding member as
+    representative, and adds the new species to curr_species and returns it.
+    """
+    var new_species_id = str(curr_generation) + "_" + str(founding_member.id)
+    var new_species = Species.new(new_species_id)
+    new_species.representative = founding_member
+    curr_species.append(new_species)
     num_new_species += 1
-    var new_species_id = str(curr_generation_id) + "_" + str(curr_genome_id)
-    var diverged_species = Species.new(new_species_id)
-    curr_species.append(diverged_species)
-    return diverged_species
+    return new_species
 
 
 func next_timestep() -> void:
@@ -289,26 +310,26 @@ func finish_current_agents() -> void:
     curr_agents.clear()
 
 
-func prepare_old_species() -> void:
+func update_curr_species() -> Array:
     """Determines which species will get to reproduce in the next generation.
     Calls the Species.update() method, which determines the species fitness as a
-    group and removes all its members to make way for a new generation.
+    group and removes all its members to make way for a new generation. Then loops
+    over all species and updates the amount of offspring they will spawn the next
+    generation.
     """
     num_dead_species = 0
+    # sum the average fitness of every species
     total_avg_species_fitness = 0
-    # this array will replace the curr species array
+    # this array holds the updated species
     var updated_species = []
     for species in curr_species:
-        # prepare the species for the next gen, and add it's average fitness
-        # to avg_population_fitness
-        var avg_species_fitness = species.update_species()
-        total_avg_species_fitness += avg_species_fitness
-        # purge species that are marked for obliteration
+        # first update the species, this will check if the species gets to survive
+        # into the next generation, and update the species leader (fittest genome)
+        species.update()
+        # check if the species gets to survive
         if not species.obliterate:
             updated_species.append(species)
-            # update curr best species
-            if avg_species_fitness > best_species.avg_fitness:
-                best_species = species
+            total_avg_species_fitness += species.avg_fitness
             # update curr_best genome by checking if this leader is fitter
             if species.leader.fitness > curr_best.fitness:
                 curr_best = species.leader
@@ -316,15 +337,19 @@ func prepare_old_species() -> void:
         else:
             num_dead_species += 1
             species.purge()
-    curr_species = updated_species
-    # this should not normally happen. Consider different parameters and starting
-    # a new run.
+    # this should not normally happen. Consider different parameters and starting a new run.
     if updated_species.size() == 0 or total_avg_species_fitness == 0:
         push_error("mass extinction"); breakpoint
-    # calculate new avg population fitness
-    avg_population_fitness = total_avg_species_fitness / updated_species.size()
     # sort species by fitness in descending order
     updated_species.sort_custom(self, "sort_by_spec_fitness")
+    # loop through the species again to calculate their spawn amounts based on their
+    # fitness relative to the total_avg_species_fitness
+    for species in updated_species:
+        species.calculate_offspring_amount(total_avg_species_fitness)
+    # update the current best species
+    best_species = updated_species.front()
+    # finally return the updated species list
+    return updated_species
 
 
 func make_hybrids(num_to_spawn: int) -> Array:
@@ -343,11 +368,10 @@ func make_hybrids(num_to_spawn: int) -> Array:
             # determine which species the new hybrid belongs to
             var mom_score =  baby.get_compatibility_score(mom)
             var dad_score =  baby.get_compatibility_score(dad)
-            # make a new species if it matches none of the parents
+            # find or make a new species if the baby matches none of the parents
             if mom_score > Params.species_boundary and dad_score > Params.species_boundary:
-                var diverged_species = make_new_species()
-                diverged_species.add_member(baby)
-                diverged_species.representative = baby
+                var found_species = find_species(baby)
+                found_species.add_member(baby)
             # baby has a score closer to mom than to dad
             elif mom_score < dad_score:
                 curr_species[species_index].add_member(baby)
@@ -357,9 +381,9 @@ func make_hybrids(num_to_spawn: int) -> Array:
             # make an agent for the baby, and append it to the curr_agents array
             curr_agents.append(baby.generate_agent())
             hybrids.append(baby)
-            # if we went through every species, but still have spawns, go again
         # go to next species
         species_index += 1 
+        # if we went through every species, but still have spawns, go again
         if species_index == curr_species.size() - 2:
             species_index = 0
     return hybrids
@@ -388,7 +412,7 @@ func print_status() -> void:
     \n generation number: {gen_id} \n number new species: {new_s}
     \n number dead species: {dead_s} \n total number of species: {tot_s}
     \n avg. fitness: {avg_fit} \n best fitness: {best} \n """
-    var print_vars = {"gen_id" : curr_generation_id, "new_s" : num_new_species,
+    var print_vars = {"gen_id" : curr_generation, "new_s" : num_new_species,
                       "dead_s" : num_dead_species, "tot_s" : curr_species.size(),
                       "avg_fit" : avg_population_fitness, "best" : curr_best.fitness}
     print(print_str.format(print_vars))

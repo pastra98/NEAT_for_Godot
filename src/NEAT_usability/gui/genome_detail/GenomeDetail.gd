@@ -38,7 +38,7 @@ func _ready() -> void:
     # indicate whether the genome is dead, update the decorator to show the genome's name
     var dead = "[dead] " if inspected_genome.agent.is_dead else ""
     $WindowLayout/Decorator.set_window_name("inspecting genome nr. " + dead +
-                                            str(inspected_genome.genome_id))
+                                            str(inspected_genome.id))
     # connect a signal to the body of the genome, to indicate when it dies in the decorator
     inspected_genome.agent.body.connect("death", self, "mark_agent_dead")
     # lastly show the depth of the network and draw it
@@ -53,7 +53,7 @@ func update_inspected_genome(new_genome: Genome) -> void:
     # indicate whether the genome is dead, update the decorator to show the genome's name
     var dead = "[dead] " if inspected_genome.agent.is_dead else ""
     $WindowLayout/Decorator.set_window_name("inspecting genome nr. " + dead +
-                                            str(inspected_genome.genome_id))
+                                            str(inspected_genome.id))
     # lastly show the depth of the network and draw it
     details.text = "Depth: " + str(inspected_genome.agent.network.depth)
     network_drawer.update()
@@ -63,7 +63,7 @@ func mark_agent_dead() -> void:
     """updates the window title if the agent has died
     """
     $WindowLayout/Decorator.set_window_name("inspecting genome nr. [dead] " +
-                                            str(inspected_genome.genome_id))
+                                            str(inspected_genome.id))
     _on_HighlightToggle_toggled(false)
 
 
@@ -80,7 +80,7 @@ func _on_SaveNetwork_button_down() -> void:
         # the genome id to avoid duplicates
         var time = OS.get_time()
         var time_str = "%0*d"%[2, time["hour"]]+"_"+"%0*d"%[2, time["minute"]]+"__"
-        name_chooser.text = time_str + str(inspected_genome.genome_id)
+        name_chooser.text = time_str + str(inspected_genome.id)
         # change the save button text to show that pressing again will confirm save
         save_button.text = "Confirm Save"
         # add the new line edit as a child

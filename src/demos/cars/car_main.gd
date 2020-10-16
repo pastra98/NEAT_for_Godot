@@ -77,7 +77,7 @@ func _physics_process(delta) -> void:
             ga.next_generation()
             place_bodies(ga.get_curr_bodies())
             # every x gens, increase the generation_step
-            if ga.curr_generation_id % 2 == 0:
+            if ga.curr_generation % 2 == 0:
                 generation_step += 6
                 print("increased step to " + str(generation_step))
             total_time = 0

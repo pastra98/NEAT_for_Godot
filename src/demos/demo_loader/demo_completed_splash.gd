@@ -38,7 +38,7 @@ func initialize(ga: GeneticAlgorithm, old_threshold: float) -> void:
     """
     var splash_info_vars = {
         "best_fit" : ga.curr_best.fitness,
-        "gen" : ga.curr_generation_id,
+        "gen" : ga.curr_generation,
         "neurons" : ga.curr_best.neurons.size(),
         "links" : ga.curr_best.get_enabled_innovs().size(),
         "num_spec" : ga.curr_species.size(),

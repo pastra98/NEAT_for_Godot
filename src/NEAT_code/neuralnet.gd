@@ -13,7 +13,7 @@ var depth: int
 # flush count is 1 if active run type, else it is the number of hidden layers.
 var flush_count: int
 # variables for the neurons in this network.
-var bias: Neuron
+var all_neurons: Dictionary
 var inputs = []
 var hiddens = []
 var outputs = []
@@ -25,7 +25,7 @@ var activation_func: FuncRef
 var enabled_links: Array
 
 
-func _init(neurons: Dictionary, links_array: Array) -> void:
+func _init(neurons: Dictionary, links: Dictionary) -> void:
     """When the network gets initialized, the neuron and link data from the genome
     class is used to build a neural network object by assigning neuron genes to
     variables that enable accessing them in update() function.
@@ -33,33 +33,29 @@ func _init(neurons: Dictionary, links_array: Array) -> void:
     reading the link genes and using the connect_input() function to build the nested
     inputs array in the Neuron class.
     """
+    all_neurons = neurons
     # assign neurons to arrays based on their type
-    # insert neurons in sorted order, to not change order of input and output neurons
-    var neuron_ids = neurons.keys(); neuron_ids.sort()
-    for neuron_id in neuron_ids:
-        var neuron = neurons[neuron_id]
+    for neuron in all_neurons.values():
         # make sure neuron gene has no inputs from parent links (because it is a copy)
         neuron.input_connections.clear()
         # insert neurons into matching arrays based on type
         match neuron.neuron_type:
-            # only one bias neuron
-            Params.NEURON_TYPE.bias:
-                bias = neuron
             Params.NEURON_TYPE.input:
                 inputs.append(neuron)
+            Params.NEURON_TYPE.bias:
+                # bias always outputs 1.0
+                neuron.output = 1.0
             Params.NEURON_TYPE.hidden:
                 hiddens.append(neuron)
-            # output neurons get hidden inputs, but also need to be accessed separately
             Params.NEURON_TYPE.output:
                 outputs.append(neuron)
-                hiddens.append(neuron)
     # connect all neurons using the information stored in the link genes
     enabled_links = []
-    for link in links_array:
+    for link in links.values():
         if link.enabled:
             enabled_links.append(link)
-            var from_neuron = neurons[link.from_neuron_id]
-            var to_neuron = neurons[link.to_neuron_id]
+            var from_neuron = all_neurons[link.from_neuron_id]
+            var to_neuron = all_neurons[link.to_neuron_id]
             # register the from_neuron as an input of the to_neuron
             to_neuron.connect_input(from_neuron, link.weight)
     # sort neurons such that they are evaluated left to right, feed_back
@@ -71,9 +67,6 @@ func _init(neurons: Dictionary, links_array: Array) -> void:
     flush_count = 1 if Params.is_runtype_active else depth
     # set a funcref to the activation func that will be used
     activation_func = funcref(self, Params.curr_activation_func)
-    # set the bias output to 1. Finding the right bias value for every hidden
-    # neuron is achieved by changing the weight connecting to the bias neuron.
-    bias.output = 1
 
 
 func update(input_values: Array) -> Array:
@@ -96,10 +89,11 @@ func update(input_values: Array) -> Array:
     # step through every hidden neuron (incl. outputs), sum up their weighted
     # input connections, pass them to activate(), and update their output
     for _flush in flush_count:
-        for neuron in hiddens:
+        for neuron in hiddens + outputs:
             var weighted_sum = 0
-            for input in neuron.input_connections:
-                weighted_sum += input[0].output * input[1]
+            for connection in neuron.input_connections:
+                var input_neuron = connection[0]; var weight = connection[1]
+                weighted_sum += input_neuron.output * weight
             neuron.output = activation_func.call_func(weighted_sum, neuron.activation_curve)
     # copy output of output neurons into output array
     output.clear()
@@ -117,10 +111,11 @@ func save_to_json(name: String) -> void:
     network_data["activation_func"] = Params.curr_activation_func
     network_data["runtype_active"] = Params.is_runtype_active
     network_data["depth"] = depth
-    # Add every neuron from inputs and hiddens (which includes outputs) to the save
-    # dict. Bias is generated independently, since it doesn't require persistent data.
+    # Save all neurons in sorted order
+    var sorted_neurons = all_neurons.values()
+    sorted_neurons.sort_custom(self, "sort_neurons_by_pos")
     var neuron_data = []
-    for neuron in inputs + hiddens:
+    for neuron in sorted_neurons:
         var neuron_save = {
             "id" : neuron.neuron_id,
             "curve" : neuron.activation_curve,

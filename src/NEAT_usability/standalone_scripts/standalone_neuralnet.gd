@@ -27,7 +27,7 @@ var depth: int
 # flush count is 1 if run_type active, else it is the number of hidden layers.
 var flush_count: int
 # variables for the neurons in this network.
-var bias: StandaloneNeuron
+var all_neurons: Dictionary
 var inputs = []
 var hiddens = []
 var outputs = []
@@ -63,28 +63,25 @@ func load_config(network_name: String) -> void:
         push_error("file not found"); breakpoint
     var network_data = parse_json(file.get_as_text())
     file.close()
-    # required to access neurons easily when making connections
-    var temp_neurons = {}
-    # since the bias always outputs 1, it's parameters are irrelevant
-    bias = StandaloneNeuron.new(1, 1)
-    bias.output = 1
-    # use floats as key, because parse_json only returns floats.
-    temp_neurons[1.0] = bias
     # generate Neurons and put them into appropriate arrays
-    for n in network_data["neurons"]:
-        var neuron = StandaloneNeuron.new(int(n["id"]), n["curve"])
-        temp_neurons[n["id"]] = neuron
-        match int(n["type"]):
+    for neuron_data in network_data["neurons"]:
+        var neuron = StandaloneNeuron.new(int(neuron_data["id"]), neuron_data["curve"])
+        all_neurons[neuron_data["id"]] = neuron
+        match int(neuron_data["type"]):
             NEURON_TYPE.input:
                 inputs.append(neuron)
+            NEURON_TYPE.bias:
+                # bias always outputs 1.0
+                neuron.output = 1.0
             NEURON_TYPE.hidden:
                 hiddens.append(neuron)
             NEURON_TYPE.output:
                 outputs.append(neuron)
-                hiddens.append(neuron)
     # connect links just like in regular NeuralNet class.
-    for l in network_data["links"]:
-        temp_neurons[l["to"]].connect_input(temp_neurons[l["from"]], l["weight"])
+    for link_data in network_data["links"]:
+        var from_neuron = all_neurons[link_data["from"]]
+        var to_neuron = all_neurons[link_data["to"]]
+        to_neuron.connect_input(from_neuron, link_data["weight"])
     # extract the rest of the network Metadata
     depth = network_data["depth"]
     is_runtype_active = network_data["runtype_active"]
@@ -130,10 +127,11 @@ func update(input_values: Array) -> Array:
     # step through every hidden neuron (incl. outputs), sum up their weighted
     # input connections, pass them to activate(), and update the output
     for _flush in flush_count:
-        for neuron in hiddens:
+        for neuron in hiddens + outputs:
             var weighted_sum = 0
-            for input in neuron.input_connections:
-                weighted_sum += input[0].output * input[1]
+            for connection in neuron.input_connections:
+                var input_neuron = connection[0]; var weight = connection[1]
+                weighted_sum += input_neuron.output * weight
             neuron.output = activation_func.call_func(weighted_sum, neuron.activation_curve)
     # copy output of output neurons into output array
     output.clear()

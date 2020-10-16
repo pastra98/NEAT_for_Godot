@@ -66,8 +66,8 @@ func _physics_process(delta):
         total_time = 0
         ga.next_generation()
         # update the parameters for the lander placement
-        if training_program.has(ga.curr_generation_id):
-            curr_training = training_program[ga.curr_generation_id]
+        if training_program.has(ga.curr_generation):
+            curr_training = training_program[ga.curr_generation]
         # place the bodies in the moon scene
         place_bodies(ga.get_curr_bodies())
 
