@@ -262,7 +262,7 @@ func make_new_species(founding_member: Genome) -> Species:
     """Generates a new species with a unique id, assigns the founding member as
     representative, and adds the new species to curr_species and returns it.
     """
-    var new_species_id = str(curr_generation) + "_" + str(founding_member.genome_id)
+    var new_species_id = str(curr_generation) + "_" + str(founding_member.id)
     var new_species = Species.new(new_species_id)
     new_species.representative = founding_member
     curr_species.append(new_species)
