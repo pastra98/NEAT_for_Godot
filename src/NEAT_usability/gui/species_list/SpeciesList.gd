@@ -45,7 +45,7 @@ signal on_load_genome
 func _ready() -> void:
     """Generates a new SpeciesList that immediately updates to show current species.
     """
-    generation_label.text = default_label_text + str(ga.curr_generation_id) + " (current)"
+    generation_label.text = default_label_text + str(ga.curr_generation) + " (current)"
     # call loading functions when clicking on species or genome
     species_list.connect("item_selected", self, "load_species")
     member_list.connect("item_selected", self, "load_genome")
@@ -69,7 +69,7 @@ func update_species_list() -> void:
                                         ga.curr_species.size(),
                                         ga.best_species.species_id]
     population_info.parse_bbcode(info_text)
-    generation_label.text = default_label_text + str(ga.curr_generation_id)
+    generation_label.text = default_label_text + str(ga.curr_generation)
     # clear the item list, and clear the dictionary of species
     species_list.clear()
     curr_species_dict.clear()
@@ -110,7 +110,7 @@ func update_member_list() -> void:
     var member_index = 0
     for member in s_species.alive_members:
         s_species_members[member_index] = member
-        member_list.add_item("genome_" + str(member.genome_id))
+        member_list.add_item("genome_" + str(member.id))
         member_index += 1
 
 

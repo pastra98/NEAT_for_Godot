@@ -66,7 +66,7 @@ func _process(_delta):
 ################################################################################
             # var past_gen_best = ga.curr_best
             # var past_gen_elite = ga.curr_best
-            # if ga.curr_generation_id > 1:
+            # if ga.curr_generation > 1:
             # 	past_gen_elite = ga.first_elite
             # 	# past_gen_best = ga.curr_species.front().leader
             # 	# genome_detail.update_inspected_genome(past_gen_best)
@@ -76,10 +76,10 @@ func _process(_delta):
             place_testers(ga.get_curr_bodies())
             # update the info text, and print the same info to the console
             var info_text = "generation: %s \n best fitness: %s \n number species: %s"
-            var info_vars = [ga.curr_generation_id, ga.curr_best.fitness, ga.curr_species.size()]
+            var info_vars = [ga.curr_generation, ga.curr_best.fitness, ga.curr_species.size()]
 ################################################################################
-            # # var info_vars = [ga.curr_generation_id, past_gen_best.fitness, ga.curr_species.size()]
-            # var info_vars = [ga.curr_generation_id, past_gen_elite.fitness, ga.curr_species.size()]
+            # # var info_vars = [ga.curr_generation, past_gen_best.fitness, ga.curr_species.size()]
+            # var info_vars = [ga.curr_generation, past_gen_elite.fitness, ga.curr_species.size()]
 ################################################################################
             $Info.text = info_text % info_vars
             print(info_text % info_vars)
