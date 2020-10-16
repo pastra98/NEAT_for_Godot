@@ -242,7 +242,9 @@ func next_generation() -> void:
 
 
 func find_species(new_genome: Genome) -> Species:
-    """
+    """Tries to find a species to which the given genome is similar enough to be
+    added as a member. If no compatible species is found, a new one is made. Returns
+    the species (but the genome still needs to be added as a member).
     """
     var found_species: Species
     # try to find an existing species to which the genome is close enough to be a member
