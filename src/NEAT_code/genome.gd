@@ -9,7 +9,7 @@ neurons and links, and it has a method to be combined with another genome.
 # the agent is only assigned once generate_agent() gets called
 var agent: Agent
 # the name of the genome, and the name of the species it belongs to
-var genome_id: int
+var id: int
 var species_id: String
 # a dictionary of every neuron in the genome, keys are the neurons ids
 var neurons: Dictionary
@@ -24,10 +24,10 @@ var fitness_adjusted: float
 var is_leader_clone = false
 
 
-func _init(id: int, initial_neurons: Dictionary, initial_links: Dictionary) -> void:
+func _init(genome_id: int, initial_neurons: Dictionary, initial_links: Dictionary) -> void:
     """Generate a new genome, this should not be called outside of the NEAT code
     """
-    genome_id = id
+    id = genome_id
     neurons = initial_neurons
     links = initial_links
 
@@ -360,7 +360,7 @@ func generate_agent() -> Agent:
     the genomes links and neurons. Should only be called once the genome is finished
     mutating (if it is not a leader clone).
     """
-    var new_network = NeuralNet.new(neurons, links.values())
+    var new_network = NeuralNet.new(neurons, links)
     agent = Agent.new(new_network, is_leader_clone)
     return agent
 
