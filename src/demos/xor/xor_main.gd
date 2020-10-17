@@ -39,13 +39,10 @@ func _ready() -> void:
     add_child(ga)
     place_testers(ga.get_curr_bodies())
     # add the genome detail to the tree, place it roughly in the center of the screen
-    genome_detail.inspected_genome = ga.curr_best
+    # inspect a random genome in the first gen
+    genome_detail.inspected_genome = Utils.random_choice(ga.curr_genomes)
     add_child(genome_detail)
     genome_detail.rect_position = rect_size / 3.5
-################################################################################
-    # paused = true
-    # test_network("best_xor")
-################################################################################
 
 
 func _process(_delta):
@@ -56,33 +53,22 @@ func _process(_delta):
     if not paused:
         # let every XorTesters perform one of the 4 tests
         ga.next_timestep()
-        # if the fittest network reached the fitness threshold, end this test
-        if ga.curr_best.fitness > fitness_threshold:
-            end_xor_test()
         # if XorTesters are done with every test, they are marked dead. time for next gen
-        elif ga.all_agents_dead:
-            # show the best genome from prev generation and start next gen
-            genome_detail.update_inspected_genome(ga.curr_best)
-################################################################################
-            # var past_gen_best = ga.curr_best
-            # var past_gen_elite = ga.curr_best
-            # if ga.curr_generation > 1:
-            # 	past_gen_elite = ga.first_elite
-            # 	# past_gen_best = ga.curr_species.front().leader
-            # 	# genome_detail.update_inspected_genome(past_gen_best)
-            # 	genome_detail.update_inspected_genome(past_gen_elite)
-################################################################################
+        if ga.all_agents_dead:
+            # start next gen and evaluate fitnesses
             ga.next_generation()
-            place_testers(ga.get_curr_bodies())
-            # update the info text, and print the same info to the console
+            # update the inspected genome and info about the last generation
+            genome_detail.update_inspected_genome(ga.curr_best)
             var info_text = "generation: %s \n best fitness: %s \n number species: %s"
             var info_vars = [ga.curr_generation, ga.curr_best.fitness, ga.curr_species.size()]
-################################################################################
-            # # var info_vars = [ga.curr_generation, past_gen_best.fitness, ga.curr_species.size()]
-            # var info_vars = [ga.curr_generation, past_gen_elite.fitness, ga.curr_species.size()]
-################################################################################
             $Info.text = info_text % info_vars
             print(info_text % info_vars)
+            # if the fittest network reached the fitness threshold, end this test
+            if ga.curr_best.fitness > fitness_threshold:
+                end_xor_test()
+            else:
+                # add the population of the next gen to the tree
+                place_testers(ga.get_curr_bodies())
 
 
 func place_testers(testers: Array) -> void:
