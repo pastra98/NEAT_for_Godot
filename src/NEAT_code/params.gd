@@ -66,10 +66,10 @@ var highlighter_width = 3
 # -------------------- GENOME PARAMETERS --------------------
 
 # Probability of skipping crossover generating new genomes
-var asex_prob = 0.25
+var prob_asex = 0.25
 # probability of gene being inherited from the less fit parent. Lower number better.
-# THIS IS NOT THE RATE OF SEX-REPRODUCTION. That would be 1 - asex_prob
-var crossover_rate = 0.35
+# THIS IS NOT THE RATE OF SEX-REPRODUCTION. That would be 1 - prob_asex
+var gene_swap_rate = 0.35
 # All types of neurons
 enum NEURON_TYPE{input, bias, hidden, output}
 # default activation curve that neurons are initialized with. tanh default is 2.
@@ -212,8 +212,7 @@ enum SPLIT_MEMBERS{from_link, neuron_id, to_link}
 # ---------------------------------------------------------------
 
 func load_config(config_name: String) -> void:
-    """Loads a config file and resets the properties of Params. Creates a Default
-    config if it doesn't exist based on the settings in this file.
+    """
     """
     var file = File.new()
     var dir = Directory.new()
@@ -221,26 +220,118 @@ func load_config(config_name: String) -> void:
     if dir.open("user://param_configs") == ERR_INVALID_PARAMETER:
         dir.make_dir("user://param_configs")
         save_config("Default")
-    # If a non-default config should be loaded, do so now 
-    if config_name != "Default":
-        # try to open the specified file, break execution if it doesn't exist
-        if file.open("user://param_configs/%s.json" % config_name, File.READ) != OK:
-            push_error("file not found"); breakpoint
-        var configs = parse_json(file.get_as_text())
-        # Using str2var, set the saved properties 
-        for var_name in configs.keys():
-            set(var_name, str2var(configs[var_name]))
+    # try to open the specified file, break execution if it doesn't exist
+    if file.open("user://param_configs/%s.json" % config_name, File.READ) != OK:
+        push_error("file not found"); breakpoint
+    var configs = parse_json(file.get_as_text())
+    # Using str2var, set the saved properties 
+    for var_name in configs.keys():
+        set(var_name, str2var(configs[var_name]))
 
 
 func save_config(config_name: String) -> void:
-    """Saves the current properties in a dict, and saves the values using var2str
-    to allow for saving non-json types like Vector2D and Color. 
+    """
     """
     var file = File.new()
-    file.open("user://param_configs/%s.json" % config_name, File.WRITE)
-    var Params_dict = {}
+    file.open("user://param_configs/%s.cfg" % config_name, File.WRITE)
+    var config = ConfigFile.new()
     for property in get_property_list():
         if get(property.name) != null:
-            Params_dict[property.name] = var2str(get(property.name))
-    file.store_string(JSON.print(Params_dict, "  "))
+            if property.name == "NEURON_TYPE":
+                breakpoint
+    # file.store_string(JSON.print(Params_dict, "  "))
     file.close()
+
+# include a check in save/load config to print params that are missing
+# order these properly 
+
+var ignore_properties = [
+    "editor_description",
+    "_import_path",
+    "pause_mode",
+    "name",
+    "filename",
+    "multiplayer",
+    "process_priority",
+    "script",
+    "num_inputs",
+    "num_outputs",
+    "agent_body_path",
+    "visibility_options",
+    "default_visibility",
+    "neuron_colors",
+    "weight_max_color",
+    "num_tries_find_link",
+    # add all the other param lists
+]
+
+var ga_params = [
+    "population_size",
+    "print_new_generation"
+]
+
+var network_constraints = [
+    "num_initial_links",
+    "max_neuron_amt",
+    "prevent_chaining",
+    "chain_threshold"
+]
+
+var gui_highlighter_params = [
+    "use_gui",
+    "is_highlighter_enabled",
+    "highlighter_offset",
+    "highlighter_radius",
+    "highlighter_color",
+    "highlighter_width"
+]
+
+var crossover_params = [
+    "prob_asex",
+    "gene_swap_rate",
+    "random_mating"
+]
+
+var neuron_mut_params = [
+    "prob_add_neuron",
+    "default_curve",
+    "prob_activation_mut",
+    "activation_shift_deviation"
+]
+
+var link_mut_params = [
+    "prob_add_link",
+    "prob_disable_link",
+    "prob_loop_link",
+    "prob_direct_link",
+    "prob_weight_mut",
+    "w_range",
+    "no_feed_back",
+    "prob_weight_replaced",
+    "weight_shift_deviation",
+]
+
+var speciation_params = [
+    "species_boundary",
+    "coeff_matched",
+    "coeff_disjoint",
+    "coeff_excess"
+]
+
+var species_params = [
+    "enough_gens_to_change_things",
+    "allowed_gens_no_improvement",
+    "old_age",
+    "youth_bonus",
+    "old_penalty",
+    "update_species_rep",
+    "leader_is_rep",
+    "spawn_cutoff",
+    "selection_threshold",
+]
+
+var neural_net_params = [
+    "is_runtype_active",
+    "curr_activation_func",
+    "activate_inputs",
+]
