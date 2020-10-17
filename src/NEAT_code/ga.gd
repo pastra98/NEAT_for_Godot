@@ -14,17 +14,17 @@ var curr_genome_id = 0
 var curr_generation = 1
 # the average fitness of every currently alive genome
 var avg_population_fitness = 0
-# total of all average species fitnesses, used to calculate the spawn amount per species
-var total_avg_species_fitness = 0
-# the all-time best genome. Mustn't be from the current generation. 
+# the all-time best genome
+var all_time_best: Genome
+# the best genome from the last generation
 var curr_best: Genome
-# the species with the best average fitness in the population
+# the species with the best average fitness from the last generation
 var best_species: Species
 # the array of all currently alive genomes
 var curr_genomes = []
 # array holding all agents, gets updated to only hold alive agents every timestep
 var curr_agents = []
-# an array containging species objects. Every species holds an array of members.
+# an array containing species objects. Every species holds an array of members.
 var curr_species = []
 # can be used to determine when a new generation should be started
 var all_agents_dead = false
@@ -79,6 +79,7 @@ func create_initial_population() -> Array:
     neurons. Every genome gets assigned to a species, new species are created
     if necessary. Returns an array of the current genomes.
     """
+    # --- first create a set of input, output and bias neurons
     var made_bias = false
     # current neuron_id is stored in Innovations, and gets incremented there
     var initial_neuron_id: int
@@ -112,7 +113,7 @@ func create_initial_population() -> Array:
         output_neurons[initial_neuron_id] = new_neuron
     # merge input and output neurons into a single dict.
     var all_neurons = Utils.merge_dicts(input_neurons, output_neurons)
-    # generate the first generation of genomes
+    # --- generate the first generation of genomes
     var initial_genomes = []
     for _initial_genome in Params.population_size:
         # Every genome gets a new set of neurons and random connections
@@ -149,21 +150,16 @@ func create_initial_population() -> Array:
         # species is compatible with the genome, a new species is made and returned
         var found_species = find_species(new_genome)
         found_species.add_member(new_genome)
-        # set last genome and species to be best species and genome, to allow
-        # for comparison later
-        curr_best = initial_genomes.back()
-        best_species = curr_species.back()
         curr_agents.append(new_genome.generate_agent())
         initial_genomes.append(new_genome)
     # --- end of for loop that creates all genomes.
+    # pick random genome of first gen as all_time_best, to allow for comparison
+    all_time_best = Utils.random_choice(initial_genomes)
     # let ui know that it should update the species list
     emit_signal("made_new_gen")
     # return all new genomes 
     return initial_genomes
 
-################################################################################
-var first_elite: Genome
-################################################################################
 
 func next_generation() -> void:
     """Gets called once for every new generation. Kills all agents, updates the
@@ -177,8 +173,9 @@ func next_generation() -> void:
     # assign the fitness stored in the agent to the genome, then clear the agent array
     finish_current_agents()
     # Get updated list of species that survived into the next generation, and update
-    # their spawn amounts based on fitness
+    # their spawn amounts based on fitness. Sort species by fitness
     curr_species = update_curr_species()
+    curr_species.sort_custom(self, "sort_by_spec_fitness")
     # print some info about the last generation
     if Params.print_new_generation:
         print_status()
@@ -204,10 +201,6 @@ func next_generation() -> void:
             if not spawned_elite:
                 baby = species.elite_spawn(curr_genome_id)
                 spawned_elite = true
-################################################################################
-                if num_spawned == 0:
-                    first_elite = baby
-################################################################################
             # if less than 2 members in spec., crossover cannot be performed
             # there is also asex_prob, which might result in an asex baby
             elif species.pool.size() < 2 or Utils.random_f() < Params.asex_prob:
@@ -320,34 +313,42 @@ func update_curr_species() -> Array:
     generation.
     """
     num_dead_species = 0
-    # sum the average fitness of every species
-    total_avg_species_fitness = 0
+    # find the fittest genome from the last gen. Start with a random genome to allow comparison
+    curr_best = Utils.random_choice(curr_species.front().alive_members)
+    # sum the average fitnesses of every species, and sum the average unadjusted fitness
+    var total_adjusted_species_avg_fitness = 0
+    var total_species_avg_fitness = 0
     # this array holds the updated species
     var updated_species = []
     for species in curr_species:
         # first update the species, this will check if the species gets to survive
-        # into the next generation, and update the species leader (fittest genome)
+        # into the next generation, update the species leader, calculate the average fitness
+        # and calculate how many spawns the species gets to have in the next generation
         species.update()
         # check if the species gets to survive
         if not species.obliterate:
             updated_species.append(species)
-            total_avg_species_fitness += species.avg_fitness
-            # update curr_best genome by checking if this leader is fitter
+            # collect the average fitness, and the adjusted average fitness
+            total_species_avg_fitness += species.avg_fitness
+            total_adjusted_species_avg_fitness += species.avg_fitness_adjusted 
+            # update curr_best genome and possibly all_time_best genome
             if species.leader.fitness > curr_best.fitness:
+                if species.leader.fitness > all_time_best.fitness:
+                    all_time_best = species.leader
                 curr_best = species.leader
         # remove dead species
         else:
             num_dead_species += 1
             species.purge()
-    # this should not normally happen. Consider different parameters and starting a new run.
-    if updated_species.size() == 0 or total_avg_species_fitness == 0:
+    # update avg population fitness of the previous generation
+    avg_population_fitness = total_species_avg_fitness / curr_species.size()
+    # this should not normally happen. Consider different parameters and starting a new run
+    if updated_species.size() == 0 or total_adjusted_species_avg_fitness == 0:
         push_error("mass extinction"); breakpoint
-    # sort species by fitness in descending order
-    updated_species.sort_custom(self, "sort_by_spec_fitness")
     # loop through the species again to calculate their spawn amounts based on their
-    # fitness relative to the total_avg_species_fitness
+    # fitness relative to the total_adjusted_species_avg_fitness
     for species in updated_species:
-        species.calculate_offspring_amount(total_avg_species_fitness)
+        species.calculate_offspring_amount(total_adjusted_species_avg_fitness)
     # update the current best species
     best_species = updated_species.front()
     # finally return the updated species list
