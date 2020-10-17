@@ -202,8 +202,8 @@ func next_generation() -> void:
                 baby = species.elite_spawn(curr_genome_id)
                 spawned_elite = true
             # if less than 2 members in spec., crossover cannot be performed
-            # there is also asex_prob, which might result in an asex baby
-            elif species.pool.size() < 2 or Utils.random_f() < Params.asex_prob:
+            # there is also prob_asex, which might result in an asex baby
+            elif species.pool.size() < 2 or Utils.random_f() < Params.prob_asex:
                 baby = species.asex_spawn(curr_genome_id)
             # produce a crossed-over genome
             else:
