@@ -127,8 +127,8 @@ func create_initial_population() -> Array:
             # pick some random neuron id's from both input and output
             var from_neuron_id = Utils.random_choice(input_neurons.keys())
             var to_neuron_id = Utils.random_choice(output_neurons.keys())
-            # don't add a link that connects to a bias neuron in the first gen
-            if neurons[to_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
+            # don't add a link that connects from a bias neuron in the first gen
+            if neurons[from_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
                 # Innovations returns either an existing or new id
                 var innov_id = Innovations.check_new_link(from_neuron_id, to_neuron_id)
                 # prevent adding duplicates
