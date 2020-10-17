@@ -17,9 +17,6 @@ var neurons: Dictionary
 var links: Dictionary
 # fitness is assigned during ga.finish_current_agents()
 var fitness: float
-# the adjusted fitness takes into account the age bonus/punishment that the genomes
-# species currently has
-var fitness_adjusted: float
 # only true if the genome is a clone of it's species leader, see ga.next_generation()
 var is_leader_clone = false
 
