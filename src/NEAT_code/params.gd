@@ -75,7 +75,7 @@ enum NEURON_TYPE{input, bias, hidden, output}
 # default activation curve that neurons are initialized with. tanh default is 2.
 # the other defaults can be found in the activation function definitions in the
 # neuralnet class.
-var default_curve = 2.0
+var default_curve = 3.0
 
 # ----- probabilities of mutations
 # probabilities of adding a neuron in mutation func
@@ -230,6 +230,7 @@ func load_config(config_name: String) -> void:
         # Using str2var, set the saved properties 
         for var_name in configs.keys():
             set(var_name, str2var(configs[var_name]))
+
 
 func save_config(config_name: String) -> void:
     """Saves the current properties in a dict, and saves the values using var2str
