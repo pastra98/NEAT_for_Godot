@@ -29,10 +29,12 @@ var pool: Array
 var expected_offspring = 0
 # number of spawns the species got during the last generation it was active
 var spawn_count = 0
-# average fitness of the entire species in the last gen
-var avg_fitness = 0.0
+# average fitness of all alive members
+var avg_fitness = 0
+# average fitness adjusted by the age modifier
+var avg_fitness_adjusted = 0
 # best ever fitness witnessed in this species
-var best_ever_fitness = 0.0
+var best_ever_fitness = 0
 # should this species be purged?
 var obliterate = false
 # The amount of offspring to be spawned in the next generation
@@ -53,23 +55,19 @@ func _init(id: String) -> void:
     species_id = id
 
 
-func update() -> float:
+func update() -> void:
     """Checks if the species continues to survive into the next generation. If so,
     the total fitness of the species is calculated and adjusted according to the age
     bonus of the species. It's members are ranked according to their fitness, and
     a certain percentage of them is placed into the pool that gets to produce offspring.
     """
-    # first check if the species got to spawn any new members in the last gen
-    # if not, then kill it
-    if alive_members.empty():
+    # first check if the species hasn't spawned new members in the last gen or if it
+    # survived for too many generations without improving, in which case it is marked
+    # for obliteration.
+    if alive_members.empty() or num_gens_no_improvement > Params.allowed_gens_no_improvement:
         obliterate = true
-        return 0.0
-    # if too many gens without improvement, also wipe it
-    elif num_gens_no_improvement > Params.allowed_gens_no_improvement:
-        obliterate = true
-        return 0.0
-    # species can go into the next generation
     else:
+        # the species survives into the next generation
         spawn_count = 0
         num_to_spawn = 0
         age += 1
@@ -79,14 +77,12 @@ func update() -> float:
         num_members = alive_members.size()
         # check if current best member is fitter than previous best
         if leader.fitness > best_ever_fitness:
-            best_ever_fitness = leader.fitness
             # this means the species is improving -> normal mutation rate
+            best_ever_fitness = leader.fitness
             num_gens_no_improvement = 0
             curr_mutation_rate = Params.MUTATION_RATE.normal
-        # species is not improving, if the best member doesn't beat the previous best
         else:
             num_gens_no_improvement += 1
-            # check if there have been enough gens to increase mutation rates
             if num_gens_no_improvement > Params.enough_gens_to_change_things:
                 curr_mutation_rate = Params.MUTATION_RATE.heightened
         # if the representative should be updated, do so now
@@ -98,29 +94,23 @@ func update() -> float:
             pool = alive_members.slice(0, int(alive_members.size()*Params.spawn_cutoff))
         else:
             pool = alive_members
-        # calculate the adjusted average fitness of this species
-        avg_fitness = get_adjusted_avg_fitness()
+        # calculate the average fitness and adjusted fitness of this species
+        avg_fitness = get_avg_fitness()
+        var fit_modif = Params.youth_bonus if age < Params.old_age else Params.old_penalty
+        avg_fitness_adjusted = avg_fitness * fit_modif
         # reassign alive members to a new empty array, so new agents can be placed
         # in the next gen. Clearing it also clear the pool, since pool is a reference.
         alive_members = []
-        return avg_fitness
         
 
-func get_adjusted_avg_fitness() -> float:
-    """Adjusts the fitness of every alive_member according to its age and
-    reduce it proportionately to num of relatives. Then return the average
-    fitness of the entire species, which is needed to calculate the population
-    average fitness.
+
+func get_avg_fitness() -> float:
+    """Returns the average fitness of all members in the species
     """
-    var total_adjusted_fitness = 0
-    # adjust total fitness by punishing if old species, reward if young.
-    var fit_modif = Params.youth_bonus if age < Params.old_age else Params.old_penalty
+    var total_fitness = 0
     for member in alive_members:
-        # decrease proportional to num of relatives (prevent species monopoly)
-        member.fitness_adjusted = member.fitness * fit_modif
-        total_adjusted_fitness += member.fitness_adjusted
-    # compute the avg_fitness for the entire species, return it
-    return (total_adjusted_fitness / alive_members.size())
+        total_fitness += member.fitness
+    return (total_fitness / alive_members.size())
 
 
 func calculate_offspring_amount(total_avg_species_fitness) -> void:
@@ -131,7 +121,7 @@ func calculate_offspring_amount(total_avg_species_fitness) -> void:
     """
     # prevent species added in the current gen from producing offspring
     if age != 0:
-        num_to_spawn = round((avg_fitness / total_avg_species_fitness) * Params.population_size)
+        num_to_spawn = round((avg_fitness_adjusted / total_avg_species_fitness) * Params.population_size)
 
 
 func add_member(new_genome) -> void:
