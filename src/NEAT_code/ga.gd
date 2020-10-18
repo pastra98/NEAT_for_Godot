@@ -41,6 +41,8 @@ signal made_new_gen
 # only true for the first call to next_timestep(), in case any processing needs to
 # happen then.
 var is_first_timestep = true
+# True after evaluate_generation() is called, set to false when next_generation() is called
+var generation_evaluated = false
 
 # 0 = show all, 1 = show leaders, 2 = show none. Can be changed using gui
 var curr_visibility = Params.default_visibility
@@ -127,8 +129,8 @@ func create_initial_population() -> Array:
             # pick some random neuron id's from both input and output
             var from_neuron_id = Utils.random_choice(input_neurons.keys())
             var to_neuron_id = Utils.random_choice(output_neurons.keys())
-            # don't add a link that connects to a bias neuron in the first gen
-            if neurons[to_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
+            # don't add a link that connects from a bias neuron in the first gen
+            if neurons[from_neuron_id].neuron_type != Params.NEURON_TYPE.bias:
                 # Innovations returns either an existing or new id
                 var innov_id = Innovations.check_new_link(from_neuron_id, to_neuron_id)
                 # prevent adding duplicates
@@ -153,32 +155,41 @@ func create_initial_population() -> Array:
         curr_agents.append(new_genome.generate_agent())
         initial_genomes.append(new_genome)
     # --- end of for loop that creates all genomes.
-    # pick random genome of first gen as all_time_best, to allow for comparison
+    # pick random genome and species of first gen, to allow for comparison
     all_time_best = Utils.random_choice(initial_genomes)
+    best_species = Utils.random_choice(curr_species)
     # let ui know that it should update the species list
     emit_signal("made_new_gen")
     # return all new genomes 
     return initial_genomes
 
 
-func next_generation() -> void:
-    """Gets called once for every new generation. Kills all agents, updates the
+func evaluate_generation() -> void:
+    """Must get called once before making a new generation. Kills all agents, updates the
     fitness of every genome, and assigns genomes to a species (or creates new ones).
-    Then goes through every species, and tries to spawn their new members (=genomes)
+    """
+    # assign the fitness stored in the agent to the genome, then clear the agent array
+    finish_current_agents()
+    # Get updated list of species that survived into the next generation, and update
+    # their spawn amounts based on fitness. Also updates the curr_best, all_time_best
+    # and best_species based on the fitness of the last generation.
+    curr_species = update_curr_species()
+    # print some info about the last generation
+    if Params.print_new_generation:
+        print_status()
+    generation_evaluated = true
+
+
+func next_generation() -> void:
+    """Goes through every species, and tries to spawn their new members (=genomes)
     either through crossover or asexual reproduction, until the max population size
     is reached. The new genomes then generate an agent, which will handle the
     interactions between the entity that lives in the simulated world, and the
     neural network that is coded for by the genome.
     """
-    # assign the fitness stored in the agent to the genome, then clear the agent array
-    finish_current_agents()
-    # Get updated list of species that survived into the next generation, and update
-    # their spawn amounts based on fitness. Sort species by fitness
-    curr_species = update_curr_species()
-    curr_species.sort_custom(self, "sort_by_spec_fitness")
-    # print some info about the last generation
-    if Params.print_new_generation:
-        print_status()
+    if not generation_evaluated:
+        push_error("evaluate_generation() must be called before making a new generation")
+        breakpoint
     # keep track of new species, increment generation counter
     num_new_species = 0
     curr_generation += 1
@@ -202,8 +213,8 @@ func next_generation() -> void:
                 baby = species.elite_spawn(curr_genome_id)
                 spawned_elite = true
             # if less than 2 members in spec., crossover cannot be performed
-            # there is also asex_prob, which might result in an asex baby
-            elif species.pool.size() < 2 or Utils.random_f() < Params.asex_prob:
+            # there is also prob_asex, which might result in an asex baby
+            elif species.pool.size() < 2 or Utils.random_f() < Params.prob_asex:
                 baby = species.asex_spawn(curr_genome_id)
             # produce a crossed-over genome
             else:
@@ -232,6 +243,7 @@ func next_generation() -> void:
     emit_signal("made_new_gen")
     # reset is_first_timestep so it is true for the first call to next_timestep()
     is_first_timestep = true
+    generation_evaluated = false
 
 
 func find_species(new_genome: Genome) -> Species:
@@ -314,7 +326,7 @@ func update_curr_species() -> Array:
     """
     num_dead_species = 0
     # find the fittest genome from the last gen. Start with a random genome to allow comparison
-    curr_best = Utils.random_choice(curr_species.front().alive_members)
+    curr_best = Utils.random_choice(curr_genomes)
     # sum the average fitnesses of every species, and sum the average unadjusted fitness
     var total_adjusted_species_avg_fitness = 0
     var total_species_avg_fitness = 0
@@ -349,9 +361,9 @@ func update_curr_species() -> Array:
     # fitness relative to the total_adjusted_species_avg_fitness
     for species in updated_species:
         species.calculate_offspring_amount(total_adjusted_species_avg_fitness)
-    # update the current best species
+    # order the updated species by fitness, select the current best species, return
+    updated_species.sort_custom(self, "sort_by_spec_fitness")
     best_species = updated_species.front()
-    # finally return the updated species list
     return updated_species
 
 

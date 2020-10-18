@@ -270,7 +270,7 @@ func crossover(mate: Genome, g_id: int) -> Genome:
         if best.links[link_id].enabled:
             var dominant_genome = best
             # If a link is shared, there is a chance it is inherited from other genome
-            if worst.links.has(link_id) and Utils.random_f() < Params.crossover_rate:
+            if worst.links.has(link_id) and Utils.random_f() < Params.gene_swap_rate:
                 dominant_genome = worst
             # copy the link to add, make var for both neuron id's
             var new_link = dominant_genome.links[link_id].copy()
