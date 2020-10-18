@@ -22,9 +22,6 @@ var max_generation_time = 60
 var agent_body_path = "res://demos/lunar_lander/Lander/Lander.tscn"
 var ga = GeneticAlgorithm.new(6, 3, agent_body_path, true, "lander_params")
 
-# flag gets planted if a lander lands without crashing
-var Flag = load("res://demos/lunar_lander/Environment/Flag.tscn")
-
 # if the current generation matches a key, the dropping location of the landers,
 # along with the force which the landers receive as an initial impulse on the x axis
 # get changed.
