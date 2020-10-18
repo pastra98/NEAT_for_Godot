@@ -7,3 +7,6 @@ src/.import/
 src/icon.ico
 # ignore my vscode setup
 src/.vscode/
+
+# note to self, changes to texture import file are not tracked. Unchange using
+# git update-index --no-assume-unchanged moon_texture.jpg.import
