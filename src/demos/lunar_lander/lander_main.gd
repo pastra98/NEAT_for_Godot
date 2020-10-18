@@ -64,6 +64,7 @@ func _physics_process(delta):
     # if all landers have landed/crashed or too much time has passed, start a new gen
     if ga.all_agents_dead or total_time > max_generation_time:
         total_time = 0
+        ga.evaluate_generation()
         ga.next_generation()
         # update the parameters for the lander placement
         if training_program.has(ga.curr_generation):

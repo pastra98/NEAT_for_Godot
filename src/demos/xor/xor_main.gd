@@ -55,8 +55,8 @@ func _process(_delta):
         ga.next_timestep()
         # if XorTesters are done with every test, they are marked dead. time for next gen
         if ga.all_agents_dead:
-            # start next gen and evaluate fitnesses
-            ga.next_generation()
+            # evaluate fitnesses
+            ga.evaluate_generation()
             # update the inspected genome and info about the last generation
             genome_detail.update_inspected_genome(ga.curr_best)
             var info_text = "generation: %s \n best fitness: %s \n number species: %s"
@@ -66,8 +66,9 @@ func _process(_delta):
             # if the fittest network reached the fitness threshold, end this test
             if ga.curr_best.fitness > fitness_threshold:
                 end_xor_test()
+            # else start a new generation
             else:
-                # add the population of the next gen to the tree
+                ga.next_generation()
                 place_testers(ga.get_curr_bodies())
 
 
