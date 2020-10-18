@@ -4,7 +4,7 @@ extends Node
 Methods for storing and loading configurations are also included.
 """
 
-# -------------------- GA PARAMETERS -------------------- 
+# -------------------- GA SETTINGS -------------------- 
 
 # ----- init method
 # numbers of inputs and outputs that every neural net will have
@@ -29,7 +29,11 @@ var population_size = 300
 # turn on/off printing info about past generation, when making a new generation
 var print_new_generation = true
 
-# ----- create initial population func
+
+
+# -------------------- NETWORK CONSTRAINTS -------------------- 
+
+# ----- Generating a new network
 # Because starting minimally is a very important factor in NEAT, this parameter
 # determines how many input links get a connection to an output link, when creating
 # the first set of genomes. My personal experience thus far has shown that this
@@ -38,14 +42,23 @@ var print_new_generation = true
 # is a good target to start with. It should also approach the number of inputs that
 # are assumed to be important.
 var num_initial_links = 4
+# maximum amount of neurons, for performance reasons. can be set arbitrarily
+var max_neuron_amt = 100
+
+# ----- Chaining
+# if prevent_chaining is true, only split links that connect to neurons having
+# x values of either 0 or 1. This means that networks do not exceed a depth
+# of one hidden layer until their amount of neurons exceeds this threshold.
+var prevent_chaining = true
+var chain_threshold = 3
 
 
 
-# -------------------- GUI PARAMETERS -------------------- 
+# -------------------- GUI AND HIGHLIGHTER -------------------- 
 
 # ----- general
 # If set to true, ga will create a child node that will spawn all gui elements,
-# and highlighter will be created for every agent
+# and a highlighter will be created for every agent
 var use_gui: bool
 
 # ----- highlighter parameters
@@ -63,23 +76,48 @@ var highlighter_width = 3
 
 
 
-# -------------------- GENOME PARAMETERS --------------------
+# -------------------- Crossover --------------------
 
+# ----- mating
 # Probability of skipping crossover generating new genomes
 var prob_asex = 0.25
 # probability of gene being inherited from the less fit parent. Lower number better.
 # THIS IS NOT THE RATE OF SEX-REPRODUCTION. That would be 1 - prob_asex
 var gene_swap_rate = 0.35
+# when crossing over 2 individuals within the pool, pick random parents, or parents
+# with similar fitness scores. keeping it false (=based on fitness) seems to yield
+# the best results.
+var random_mating = false
 # All types of neurons
 enum NEURON_TYPE{input, bias, hidden, output}
+
+
+
+# -------------------- NEURON MUTATIONS --------------------
+
+# ----- Adding neurons
+# probabilities of adding a neuron in mutation func. There are two values for mutations,
+# because if a species is stale for a while it's mutation probabilities are changed
+# to the second value
+var prob_add_neuron = [0.05, 0.15]
 # default activation curve that neurons are initialized with. tanh default is 2.
 # the other defaults can be found in the activation function definitions in the
 # neuralnet class.
 var default_curve = 3.0
 
-# ----- probabilities of mutations
-# probabilities of adding a neuron in mutation func
-var prob_add_neuron = [0.05, 0.15]
+# ----- activation function mutations
+# probabilities of changing the curve of the activation function. This mutation
+# is applied on every link, meaning about this num reflects the percent of all
+# neurons that will be changed.
+var prob_activation_mut = [0.05, 0.05]
+# activation gets increased/decreased by normal distribution. This is it's deviation.
+var activation_shift_deviation = 0.3
+
+
+
+# -------------------- LINK MUTATIONS --------------------
+
+# ----- adding links
 # probabilities of adding a link between random neurons in mutation func
 var prob_add_link = [0.1, 0.3]
 # probability of disabling a single link per mutation
@@ -89,45 +127,38 @@ var prob_loop_link = [0.03, 0.1]
 # probabilities of adding a direct link (link that directly connects input to output
 # neurons). Useful when starting with few links, or when no good Innovations occur.
 var prob_direct_link = [0, 0.2]
+# disable mutations that produce feed back links
+var no_feed_back = false
+# number of attempts to find a neuron if there is no guarantee one will be found
+var num_tries_find_link = 10
+
+# ----- mutating weights
 # probabilities of changing the weight of a link. This mutation is applied on every
 # link, meaning about this num reflects the perc. of all links that will be changed
 var prob_weight_mut = [0.3, 0.3]
-# probabilities of changing the curve of the activation function. Same deal as with
-# prob_weight_mut (Applied to every neuron).
-var prob_activation_mut = [0.05, 0.05]
-
-# ----- adding neurons
-# maximum amount of neurons, for performance reasons. can be set arbitrarily
-var max_neuron_amt = 100
-# if prevent_chaining is true, only split links that connect to neurons having
-# x values of either 0 or 1. This means that networks do not exceed a depth
-# of one hidden layer until their amount of neurons exceeds this threshold.
-var prevent_chaining = true
-var chain_threshold = 3
-
-# ----- adding links
-# number of attempts to find a neuron if there is no guarantee one will be found
-var num_tries_find_link = 10
 # range in which new weights should be initialized
 var w_range = 1.0
-# disable mutations that produce feed back links
-var no_feed_back = false
-
-# ----- mutating link weights
 # completely changes weight. This can only happen if the the probability of a
 # weight mutation is met. Therefore the prob is prob_weight_mut * prob_weight_replaced 
-# also depends on the current mutation rate
 var prob_weight_replaced = [0.06, 0.15]
 # weight gets increased/decreased by normal distribution. This is it's deviation.
 var weight_shift_deviation = 0.4
 
-# ----- mutating neuron activation func
-# activation gets increased/decreased by normal distribution. This is it's deviation.
-var activation_shift_deviation = 0.3
+
+
+# -------------------- SPECIATION --------------------
+
+# ----- speciation and compatibility parameters
+# minimum compatibility score for two genomes to be considered in the same species
+var species_boundary = 1.3
+# coefficients for tweaking the compatibility score
+var coeff_matched = 0.6
+var coeff_disjoint = 1.2
+var coeff_excess = 1.4
 
 
 
-# -------------------- SPECIES PARAMETERS --------------------
+# -------------------- SPECIES BEHAVIOR --------------------
 
 # ----- species performance tracking
 # if species start to become stale and don't improve for enough_gens_to_change_things 
@@ -140,14 +171,6 @@ var allowed_gens_no_improvement = 8
 # Every mutation has two probabilities associated. This enum just refers to these
 # two states.
 enum MUTATION_RATE{normal, heightened}
-
-# ----- speciation and compatibility parameters
-# coefficients for tweaking the compatibility score
-var coeff_matched = 0.6
-var coeff_disjoint = 1.2
-var coeff_excess = 1.4
-# minimum compatibility score for two genomes to be considered in the same species
-var species_boundary = 1.3
 
 # ----- fitness sharing parameters
 # Params for rewarding/punishing species based on their age
@@ -168,15 +191,12 @@ var spawn_cutoff = 0.7
 # Before a species reaches this num of members, the pool includes every member
 # probably best to set this really high
 var selection_threshold = 30
-# when crossing over 2 individuals within the pool, pick random parents, or parents
-# with similar fitness scores. keeping it false (=based on fitness) seems to yield
-# the best results.
-var random_mating = false
 
 
 
 # -------------------- NEURAL_NET PARAMETERS -------------------- 
 
+# ----- Network updates
 # Should the network ensure that all inputs have been fully flushed through
 # the network (=snapshot), or should it give an output after every neuron has
 # been activated once (= active)
@@ -297,9 +317,9 @@ var property_dict = {
         "prob_disable_link",
         "prob_loop_link",
         "prob_direct_link",
+        "no_feed_back",
         "prob_weight_mut",
         "w_range",
-        "no_feed_back",
         "prob_weight_replaced",
         "weight_shift_deviation",
     ],
