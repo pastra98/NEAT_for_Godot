@@ -212,7 +212,9 @@ enum SPLIT_MEMBERS{from_link, neuron_id, to_link}
 # ---------------------------------------------------------------
 
 func load_config(config_name: String) -> void:
-    """
+    """Loads a valid file stored in user://param_configs/ that has a .cfg extension.
+    If no configs have been saved yet, the /params_configs directory is made, and
+    a config named 'Default.cfg' is saved with the properties of this class.
     """
     var dir = Directory.new()
     var config = ConfigFile.new()
@@ -232,10 +234,9 @@ func load_config(config_name: String) -> void:
 
 
 func save_config(config_name: String) -> void:
+    """Saves the properties of this instance of Params as a .cfg file under 
+    user://param_configs/.
     """
-    """
-    # var file = File.new()
-    # file.open("user://param_configs/%s.cfg" % config_name, File.WRITE)
     var config = ConfigFile.new()
     for property in get_property_list():
         # cannot use match statement because array patterns have to match completely
@@ -248,40 +249,19 @@ func save_config(config_name: String) -> void:
         if not has_property and not ignore_properties.has(property.name):
             print("property %s is missing in the property dict" % property.name)
     config.save("user://param_configs/%s.cfg" % config_name)
-    breakpoint
 
 
-# include a check in save/load config to print params that are missing
-# order these properly 
-
+# An array listing all the properties of this class that should be excluded from config
 var ignore_properties = [
-    "Node",
-    "Pause",
-    "owner",
-    "custom_multiplayer",
-    "Script",
-    "__meta__",
-    "Script Variables",
-    "editor_description",
-    "_import_path",
-    "pause_mode",
-    "name",
-    "filename",
-    "multiplayer",
-    "process_priority",
-    "script",
-    "num_inputs",
-    "num_outputs",
-    "agent_body_path",
-    "visibility_options",
-    "default_visibility",
-    "neuron_colors",
-    "weight_max_color",
-    "num_tries_find_link",
-    "ignore_properties",
+    "Node", "Pause", "owner", "custom_multiplayer", "Script", "__meta__",
+    "Script Variables", "editor_description", "_import_path", "pause_mode",
+    "name", "filename", "multiplayer", "process_priority", "script", "num_inputs",
+    "num_outputs", "agent_body_path", "visibility_options", "default_visibility",
+    "neuron_colors", "weight_max_color", "num_tries_find_link", "ignore_properties",
     "property_dict"
 ]
 
+# Assigns all properties used in the config to section keys
 var property_dict = {
     "Genetic Algorithm settings" : [
         "population_size",
