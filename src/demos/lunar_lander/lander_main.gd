@@ -27,14 +27,12 @@ var ga = GeneticAlgorithm.new(6, 3, agent_body_path, true, "lander_params")
 # get changed.
 onready var training_program = {
     1 : [$Moon/DropoffLocation1, 0],
-    15 : [$Moon/DropoffLocation1, 45],
-    30 : [$Moon/DropoffLocation1, 90],
-    45 : [$Moon/DropoffLocation2, 90],
-    60 : [$Moon/DropoffLocation2, 90],
-    75 : [$Moon/DropoffLocation2, 135],
-    90 : [$Moon/DropoffLocation3, 135],
-    105 : [$Moon/DropoffLocation3, 135],
-    120 : [$Moon/DropoffLocation3, 180]
+    5 : [$Moon/DropoffLocation1, 45],
+    15 : [$Moon/DropoffLocation1, 90],
+    25 : [$Moon/DropoffLocation2, 90],
+    35 : [$Moon/DropoffLocation2, 135],
+    40 : [$Moon/DropoffLocation3, 135],
+    50 : [$Moon/DropoffLocation3, 180]
 }
 # drop landers for the first 15 generations from Location 1 with no initial impulse
 onready var curr_training = training_program[1]
