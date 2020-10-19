@@ -58,7 +58,7 @@ func _process(_delta):
             # evaluate fitnesses
             ga.evaluate_generation()
             # update the inspected genome and info about the last generation
-            genome_detail.update_inspected_genome(ga.curr_best)
+            genome_detail.load_inspected_genome(ga.curr_best)
             var info_text = "generation: %s \n best fitness: %s \n number species: %s"
             var info_vars = [ga.curr_generation, ga.curr_best.fitness, ga.curr_species.size()]
             $Info.text = info_text % info_vars
@@ -89,7 +89,7 @@ func end_xor_test() -> void:
     # pause the Genetic algorithm
     paused = true
     # display the fittest genome in the detail window
-    genome_detail.update_inspected_genome(ga.curr_best)
+    genome_detail.load_inspected_genome(ga.curr_best)
     # save the best network to disk, test it using standalone_neuralnet.gd
     ga.curr_best.agent.network.save_to_json("best_xor")
     test_network("best_xor")
