@@ -16,7 +16,8 @@ func _draw():
     """Loops through every neuron and draws it along with it's input connections.
     """
     # get the required information from it's owner (a GenomeDetail)
-    var neurons_dict = owner.inspected_genome.neurons
+    # CHANGE INSPECTED GENOME.NEURONS BACK
+    var neurons_dict = owner.inspected_genome.all_neurons
     for neuron in neurons_dict.values():
         # holds the angles of links leading from the input neuron. prevent overlapping
         var connection_angles = []
@@ -44,7 +45,7 @@ func _draw():
 ################################################################################
 
 
-func draw_link(from: Neuron, to: Neuron, weight: float, offset: float, angle: float) -> void:
+func draw_link(from, to, weight: float, offset: float, angle: float) -> void:
     """
     """
     # the points on the drawing canvas
