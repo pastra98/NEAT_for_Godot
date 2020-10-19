@@ -35,25 +35,20 @@ func _ready() -> void:
     else:
         highlight_toggle.pressed = false
         highlight_toggle.disabled = true
+    # show a new genome
+    load_inspected_genome(inspected_genome)
+
+
+func load_inspected_genome(genome_to_inspect: Genome) -> void:
+    """Show a genome in the detail window.
+    """
+    inspected_genome = genome_to_inspect
     # indicate whether the genome is dead, update the decorator to show the genome's name
     var dead = "[dead] " if inspected_genome.agent.is_dead else ""
     $WindowLayout/Decorator.set_window_name("inspecting genome nr. " + dead +
                                             str(inspected_genome.id))
     # connect a signal to the body of the genome, to indicate when it dies in the decorator
     inspected_genome.agent.body.connect("death", self, "mark_agent_dead")
-    # lastly show the depth of the network and draw it
-    details.text = "Depth: " + str(inspected_genome.agent.network.depth)
-    network_drawer.update()
-
-
-func update_inspected_genome(new_genome: Genome) -> void:
-    """Show a new genome in the same detail window.
-    """
-    inspected_genome = new_genome
-    # indicate whether the genome is dead, update the decorator to show the genome's name
-    var dead = "[dead] " if inspected_genome.agent.is_dead else ""
-    $WindowLayout/Decorator.set_window_name("inspecting genome nr. " + dead +
-                                            str(inspected_genome.id))
     # lastly show the depth of the network and draw it
     details.text = "Depth: " + str(inspected_genome.agent.network.depth)
     network_drawer.update()
