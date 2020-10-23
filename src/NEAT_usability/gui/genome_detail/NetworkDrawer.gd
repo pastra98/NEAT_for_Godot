@@ -13,13 +13,14 @@ var max_offset = 150
 # remember to add loop links
 # neuron draw method
 # add typing to draw_link
+# use some trig shit to figure out length of offset links
 
 func _draw():
     """Loops through every neuron and draws it along with it's input connections.
     """
     # get the required information from it's owner (a GenomeDetail)
     # CHANGE INSPECTED GENOME.NEURONS BACK
-    var neurons_dict = owner.inspected_genome.neurons
+    var neurons_dict = owner.inspected_genome.all_neurons
     for neuron in neurons_dict.values():
         # holds the angles of links leading from the input neuron. prevent overlapping
         var connection_angles = []
