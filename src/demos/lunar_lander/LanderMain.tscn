@@ -7,6 +7,8 @@
 
 
 
+
+
 [node name="LanderMain" type="Node2D"]
 script = ExtResource( 1 )
 
