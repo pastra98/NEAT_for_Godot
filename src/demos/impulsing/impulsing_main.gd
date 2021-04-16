@@ -2,13 +2,14 @@ extends Node2D
 
 # TODO:
 # - add impulsing to demo loader, make sure the params get copied to there
-# - update the params
-# - make target a node / scene. call target.update() instead
+
+# Notes:
+# - changed act function to 4 outputs, changed params to use simoid
 
 var time = 0
 var total_time = 0
 var time_step = 0.2
-var generation_time = 15
+var generation_time = 20
 
 var paused = true
 
@@ -20,13 +21,13 @@ var creature_controller
 
 
 func _ready():
+    copy_params_to_user()
     if use_player:
         var creature_to_control = load(agent_body_path).instance()
         creature_controller = load("res://demos/impulsing/creature/creature_controller.gd").new(creature_to_control)
         add_child(creature_controller)
         creature_controller.add_child(creature_to_control)
     else:
-        copy_params_to_user()
         ga = GeneticAlgorithm.new(4, 2, agent_body_path, true, "impulsing_params")
         add_child(ga)
         place_bodies(ga.get_curr_bodies())
@@ -42,9 +43,9 @@ func _physics_process(delta) -> void:
             ga.next_timestep()
             time = 0
         # check if enough time has passed to start a new generation
-        if total_time > generation_time or ga.all_agents_dead:
-            # update the target, then update drawing
-            $Target.move_to_new_pos()
+        if (total_time > generation_time or ga.all_agents_dead) and !$Target.dragging:
+            # move the target, every 10 generations make it flip sides
+            $Target.move_to_new_pos(ga.curr_generation % 6 == 0)
             # go to next generation
             ga.evaluate_generation()
             ga.next_generation()
