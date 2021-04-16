@@ -1,6 +1,6 @@
 # NEAT for Godot
 An implementation of Kenneth O. Stanley's NEAT Algorithm for the Godot game engine,
-written in gdscript. This code is intended to be easily appliable to godot
+written in gdscript. This code is intended to be easily applicable to godot
 projects where the programmer wants to use neural networks to control agents.
 
 Tested for godot 3.2.2
