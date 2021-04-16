@@ -74,16 +74,16 @@ func _physics_process(delta) -> void:
             # check if the best agent exceeded the fitness threshold
             ga.evaluate_generation()
             if ga.curr_best.fitness > fitness_threshold:
+                # either resume with next generation or switch to demo-choosing scene
                 end_car_demo()
-            else:
-                # go to the next gen
-                ga.next_generation()
-                place_bodies(ga.get_curr_bodies())
-                # every x gens, increase the generation_step
-                if ga.curr_generation % 2 == 0:
-                    generation_step += 6
-                    print("increased step to " + str(generation_step))
-                total_time = 0
+            # go to the next gen
+            ga.next_generation()
+            place_bodies(ga.get_curr_bodies())
+            # every x gens, increase the generation_step
+            if ga.curr_generation % 2 == 0:
+                generation_step += 6
+                print("increased step to " + str(generation_step))
+            total_time = 0
 
 
 func place_bodies(bodies: Array) -> void:

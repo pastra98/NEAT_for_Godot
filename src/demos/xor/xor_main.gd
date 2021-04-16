@@ -66,10 +66,9 @@ func _process(_delta):
             # if the fittest network reached the fitness threshold, end this test
             if ga.curr_best.fitness > fitness_threshold:
                 end_xor_test()
-            # else start a new generation
-            else:
-                ga.next_generation()
-                place_testers(ga.get_curr_bodies())
+            # start a new generation
+            ga.next_generation()
+            place_testers(ga.get_curr_bodies())
 
 
 func place_testers(testers: Array) -> void:
