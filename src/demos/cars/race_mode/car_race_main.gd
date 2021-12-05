@@ -79,8 +79,8 @@ func _physics_process(delta) -> void:
                     # check if one of the agents has completed the race
                     if opponent.car.num_completed_laps == laps_to_complete:
                         race_over(opponent.car.name, false)
-			#Time here must be reset
-			time = 0
+            #Time here must be reset
+            time = 0
 
 func race_over(racer_name: String, player_crashed = true) -> void:
     """Open a 'game over' screen and connect a method that restarts the race.
@@ -101,8 +101,8 @@ func start_new_race() -> void:
         opponent_names.append(opponent.car.name)
     # if the race is restarted, delete all previous children nodes
     for child in get_children():
-		#Instead of "==" used "in" cause the instance as different value @tag
-		if "GameOverSplash" in child.name:
+        #Instead of "==" used "in" cause the instance as different value @tag
+        if "GameOverSplash" in child.name:
             child.queue_free()
         else:
             child.free()

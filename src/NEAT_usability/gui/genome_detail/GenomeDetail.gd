@@ -103,7 +103,7 @@ func _on_HighlightToggle_toggled(enabled) -> void:
 func _exit_tree() -> void:
     """Disable the highlighter if the window gets closed.
     """
-	if !inspected_genome.agent.is_dead:
-		inspected_genome.agent.enable_highlight(false)
-	else:
-		inspected_genome = null
+    if !inspected_genome.agent.is_dead:
+        inspected_genome.agent.enable_highlight(false)
+    else:
+        inspected_genome = null
