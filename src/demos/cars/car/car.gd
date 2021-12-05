@@ -34,7 +34,7 @@ var speed: int
 # hold a specified num of raycasts in an array to sense the environment
 var raycasters = []
 var sight_range = 1000
-var num_casts = 8
+var num_casts = 20 #increased number of rayCast from 8 to 20
 
 # A car cannot complete a full lap if it hasn't completed a half lap
 var completed_half_lap = false

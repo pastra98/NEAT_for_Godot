@@ -18,7 +18,7 @@ var paused = true
 # time since the last agent update
 var time = 0
 # time between physics steps until agents are updated again
-var time_step = 0.1
+var time_step = 0.2 #Same time as in the training mode
 # is displayed either when the player car crashes, or the first car drives laps_to_complete
 onready var GameOverSplash = preload("res://demos/cars/race_mode/GameOverSplash.tscn")
 
@@ -79,7 +79,8 @@ func _physics_process(delta) -> void:
                     # check if one of the agents has completed the race
                     if opponent.car.num_completed_laps == laps_to_complete:
                         race_over(opponent.car.name, false)
-
+			#Time here must be reset
+			time = 0
 
 func race_over(racer_name: String, player_crashed = true) -> void:
     """Open a 'game over' screen and connect a method that restarts the race.
@@ -100,7 +101,8 @@ func start_new_race() -> void:
         opponent_names.append(opponent.car.name)
     # if the race is restarted, delete all previous children nodes
     for child in get_children():
-        if child.name == "GameOverSplash":
+		#Instead of "==" used "in" cause the instance as different value @tag
+		if "GameOverSplash" in child.name:
             child.queue_free()
         else:
             child.free()

@@ -24,7 +24,7 @@ var agent_body_path = "res://demos/cars/car/Car.tscn"
 # initialize the main node that handles the genetic algorithm with 11 inputs, 4 outputs
 # the path to the car scene, enable the NEAT_Gui, and use the car_params parameters, which
 # are saved under user://param_configs
-var ga = GeneticAlgorithm.new(11, 4, agent_body_path, true, "car_params")
+var ga = GeneticAlgorithm.new(23, 4, agent_body_path, true, "car_params")
 
 # chosen track. Tracks are numbered, however the car_splash refers to them by difficulty
 var curr_track_num: int
