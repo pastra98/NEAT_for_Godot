@@ -19,6 +19,7 @@ func _ready() -> void:
     launchers.get_node("CarLauncher").connect("pressed", self, "load_car_scene")
     launchers.get_node("LanderLauncher").connect("pressed", self, "load_lander_scene")
     launchers.get_node("XorLauncher").connect("pressed", self, "load_xor_scene")
+    launchers.get_node("ImpulseLauncher").connect("pressed", self, "load_impulse_scene")
 
 
 func load_car_scene() -> void:
@@ -43,3 +44,11 @@ func load_xor_scene() -> void:
     dir.copy("res://demos/xor/xor_params.cfg",
              "user://param_configs/xor_params.cfg")
     get_tree().change_scene("res://demos/xor/XorMain.tscn")
+
+
+func load_impulse_scene() -> void:
+    """Copy impulse params to user://param_configs/ and switch to impulse scene.
+    """
+    dir.copy("res://demos/impulsing/impulsing_params.cfg",
+             "user://param_configs/impulsing_params.cfg")
+    get_tree().change_scene("res://demos/impulsing/ImpulsingMain.tscn")

@@ -21,7 +21,6 @@ var creature_controller
 
 
 func _ready():
-    copy_params_to_user()
     if use_player:
         var creature_to_control = load(agent_body_path).instance()
         creature_controller = load("res://demos/impulsing/creature/creature_controller.gd").new(creature_to_control)
@@ -62,11 +61,3 @@ func place_bodies(bodies: Array) -> void:
     # add the new bodies to the scene
     for body in bodies:
         $CreatureSpawn.add_child(body)
-
-
-
-func copy_params_to_user():
-    # MOVE THIS METHOD INTO THE DEMO LOADER BEFORE MERGING INTO MASTER
-    var dir = Directory.new()
-    dir.copy("res://demos/impulsing/impulsing_params.cfg",
-             "user://param_configs/impulsing_params.cfg")
