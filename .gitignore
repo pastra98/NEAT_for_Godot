@@ -2,7 +2,7 @@
 src/.import/
 *.import
 # The only import file that is need is the moon texture to make tiling work
-!src/demos/lunar_lander/environment/moon_texture.jpg.import
+src/demos/lunar_lander/environment/moon_texture.jpg.import
 # ignore windows icons
 src/icon.ico
 # ignore my vscode setup
