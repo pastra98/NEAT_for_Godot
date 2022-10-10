@@ -20,6 +20,8 @@ func _ready() -> void:
     launchers.get_node("LanderLauncher").connect("pressed", self, "load_lander_scene")
     launchers.get_node("XorLauncher").connect("pressed", self, "load_xor_scene")
     launchers.get_node("ImpulseLauncher").connect("pressed", self, "load_impulse_scene")
+    # only while testing save me a click
+    load_impulse_scene()
 
 
 func load_car_scene() -> void:
