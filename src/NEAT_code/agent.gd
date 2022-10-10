@@ -71,7 +71,7 @@ func enable_highlight(enabled: bool) -> void:
     """Used to show or hide the highlighter.
     """
     if Params.is_highlighter_enabled:
-        if body != null:
+        if not is_dead:
             if enabled:
                 highlighter.show()
             else:
