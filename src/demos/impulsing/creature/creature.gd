@@ -10,6 +10,7 @@ extends RigidBody2D
 
 var impulse_power = 15
 var speed_penalty = 1
+var act_threshold = 0.6
 
 onready var target = get_node("../../Target")
 
@@ -19,18 +20,23 @@ signal death
 
 func sense() -> Array:
     var direction_to_target = (target.global_position - global_position) / 2000
-    return [direction_to_target.x, direction_to_target.y,
-            linear_velocity.x / 100, linear_velocity.y / 100]
+
+    return [
+        direction_to_target.x if direction_to_target.x > 0 else 0,
+        abs(direction_to_target.x) if direction_to_target.x < 0 else 0,
+        direction_to_target.y if direction_to_target.y > 0 else 0,
+        abs(direction_to_target.y) if direction_to_target.y < 0 else 0,
+    ]
 
 
 func act(actions: Array) -> void:
-    if actions[0] > 0:
+    if actions[0] > act_threshold:
         apply_central_impulse(Vector2(0, -impulse_power))
-    elif actions[0] < 0:
+    elif actions[1] > act_threshold:
         apply_central_impulse(Vector2(0, impulse_power))
-    if actions[1] > 0:
+    if actions[2] > act_threshold:
         apply_central_impulse(Vector2(-impulse_power, 0))
-    elif actions[1] < 0:
+    elif actions[3] > act_threshold:
         apply_central_impulse(Vector2(impulse_power, 0))
 
 

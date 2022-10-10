@@ -17,6 +17,7 @@ var agent_body_path = "res://demos/impulsing/creature/Creature.tscn"
 var ga: GeneticAlgorithm
 
 var use_player = false
+var change_target_pos_gen = 3
 var creature_controller
 
 
@@ -27,7 +28,7 @@ func _ready():
         add_child(creature_controller)
         creature_controller.add_child(creature_to_control)
     else:
-        ga = GeneticAlgorithm.new(4, 2, agent_body_path, true, "impulsing_params")
+        ga = GeneticAlgorithm.new(4, 4, agent_body_path, true, "impulsing_params")
         add_child(ga)
         place_bodies(ga.get_curr_bodies())
         paused = false
@@ -44,7 +45,7 @@ func _physics_process(delta) -> void:
         # check if enough time has passed to start a new generation
         if (total_time > generation_time or ga.all_agents_dead) and !$Target.dragging:
             # move the target, every 10 generations make it flip sides
-            $Target.move_to_new_pos(ga.curr_generation % 6 == 0)
+            $Target.move_to_new_pos(ga.curr_generation % change_target_pos_gen == 0)
             # go to next generation
             ga.evaluate_generation()
             ga.next_generation()
