@@ -8,7 +8,7 @@ extends RigidBody2D
 #   IN GEOGEBRA
 # - try 4 outputs using sigmoid instead of 2
 
-var impulse_power = 15
+var impulse_power = 5
 var speed_penalty = 1
 var act_threshold = 0.6
 
@@ -40,8 +40,13 @@ func act(actions: Array) -> void:
         apply_central_impulse(Vector2(impulse_power, 0))
 
 
+func update_fitness() -> int:
+    # don't subtract fitness for moving away
+    var f_boost = max(0, target.distance_to_spawn - global_position.distance_to(target.global_position))
+    fitness += f_boost
+    return f_boost
+
+
 func get_fitness() -> float:
-    fitness = 2000 - global_position.distance_to(target.global_position)
-    fitness -= linear_velocity.length() * speed_penalty
     # don't give negative fitness
-    return max(10, fitness)
+    return max(1, fitness)
