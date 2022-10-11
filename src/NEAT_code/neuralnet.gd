@@ -179,3 +179,8 @@ static func gauss_activate(weighted_sum: float, activation_modifier: float) -> f
     """Gaussian function. Outputs range 0 to 1.
     """
     return exp(-(pow(weighted_sum, 2) / (2 * pow(activation_modifier, 2))))
+
+static func relu_activate(weighted_sum: float, activation_modifier: float) -> float:
+    """Relu function. Outputs range 0 to +infinity.
+    """
+    return max(0, weighted_sum) * (1 / activation_modifier)
