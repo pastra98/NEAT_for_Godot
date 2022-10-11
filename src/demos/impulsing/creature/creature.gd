@@ -10,7 +10,7 @@ extends RigidBody2D
 
 var impulse_power = 5
 var speed_penalty = 1
-var act_threshold = 0.6
+var act_threshold = 0.5
 
 onready var target = get_node("../../Target")
 
@@ -19,7 +19,7 @@ signal death
 
 
 func sense() -> Array:
-    var direction_to_target = (target.global_position - global_position) / 2000
+    var direction_to_target = (target.global_position - global_position) / target.distance_to_spawn
 
     return [
         direction_to_target.x if direction_to_target.x > 0 else 0,
