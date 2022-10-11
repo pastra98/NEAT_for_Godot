@@ -1,6 +1,6 @@
 extends Sprite
 
-var distance_to_spawn = 2000
+var distance_to_spawn = 500
 var dragging = false
 
 
@@ -26,6 +26,7 @@ func _unhandled_input(event):
         move_to_new_random_pos(true)
     # drag target with mouse
     elif event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+        # breakpoint
         dragging = true
         if dragging and !event.pressed:
             dragging = false
