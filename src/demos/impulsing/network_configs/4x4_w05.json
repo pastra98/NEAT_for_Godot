@@ -1,0 +1,75 @@
+{
+  "network_name": "4x4setup",
+  "activation_func": "sigm_activate",
+  "runtype_active": true,
+  "depth": 1,
+  "neurons": [
+    {
+      "id": 1,
+      "curve": 0.7,
+      "type": 1
+    },
+    {
+      "id": 2,
+      "curve": 0.7,
+      "type": 0
+    },
+    {
+      "id": 3,
+      "curve": 0.7,
+      "type": 0
+    },
+    {
+      "id": 4,
+      "curve": 0.7,
+      "type": 0
+    },
+    {
+      "id": 5,
+      "curve": 0.7,
+      "type": 0
+    },
+    {
+      "id": 6,
+      "curve": 0.7,
+      "type": 3
+    },
+    {
+      "id": 7,
+      "curve": 0.7,
+      "type": 3
+    },
+    {
+      "id": 8,
+      "curve": 0.7,
+      "type": 3
+    },
+    {
+      "id": 9,
+      "curve": 0.7,
+      "type": 3
+    }
+  ],
+  "links": [
+    {
+      "from": 2,
+      "to": 9,
+      "weight": 0.5
+    },
+    {
+      "from": 3,
+      "to": 8,
+      "weight": 0.5
+    },
+    {
+      "from": 4,
+      "to": 7,
+      "weight": 0.5
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "weight": 0.5
+    }
+  ]
+}

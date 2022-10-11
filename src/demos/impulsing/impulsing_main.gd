@@ -19,21 +19,29 @@ var paused = true
 var agent_body_path = "res://demos/impulsing/creature/Creature.tscn"
 var ga: GeneticAlgorithm
 
-var use_player = false
+var mode = "programmed"
+# var mode = "training"
+# var mode = "player"
 var creature_controller
 
 
 func _ready():
-    if use_player:
+    if mode == "player":
         var creature_to_control = load(agent_body_path).instance()
         creature_controller = load("res://demos/impulsing/creature/creature_controller.gd").new(creature_to_control)
         add_child(creature_controller)
         creature_controller.add_child(creature_to_control)
-    else:
+    elif mode == "training":
         ga = GeneticAlgorithm.new(4, 4, agent_body_path, true, "impulsing_params")
         add_child(ga)
         place_new_bodies(ga.get_curr_bodies())
         paused = false
+    elif mode == "programmed":
+        Params.load_config("impulsing_params") #s still need to load params
+        var bots = get_programmed_bodies()
+        place_new_bodies(bots)
+    else:
+        push_error("invalid type selected")
 
 
 func _physics_process(delta) -> void:
@@ -79,3 +87,40 @@ func next_trial() -> void:
     for body in $CreatureSpawn.get_children():
         body.update_fitness()
         body.global_position = $CreatureSpawn.global_position
+
+
+func get_programmed_bodies() -> Array:
+    """God this is terrible programming
+    """
+    var bots = []
+    var dir = Directory.new()
+    var fp = "res://demos/impulsing/network_configs/current"
+    if dir.open(fp) == OK:
+        dir.list_dir_begin()
+        var file_name = dir.get_next()
+        while file_name:
+            if file_name.get_extension() == "json":
+                # load a network and initialize it
+                var network = load("res://NEAT_usability/standalone_scripts/standalone_neuralnet.gd").new()
+                network.load_config(fp + "/" + file_name)
+                # make a body, then make a programmer with new body and network
+                var creature_to_control = load(agent_body_path).instance()
+                var creature_programmer = load("res://demos/impulsing/creature/creature_programmer.gd").new(creature_to_control, network)
+                add_child(creature_programmer)
+                creature_programmer.add_child(creature_to_control)
+                # make a nametag
+                var nametag = RichTextLabel.new()
+                nametag.fit_content_height = true
+                nametag.bbcode_enabled = true
+                nametag.bbcode_text = "[color=red]%s[/color]" % file_name.get_basename()
+                nametag.rect_clip_content = false
+                nametag.rect_size = Vector2(600, 60)
+                nametag.rect_position = Vector2(-30, -50)
+                nametag.rect_scale = Vector2(3, 3)
+                creature_to_control.add_child(nametag)
+                # append to array
+                bots.append(creature_to_control)
+            file_name = dir.get_next()
+    else:
+        push_error("Invalid file path!")
+    return bots
