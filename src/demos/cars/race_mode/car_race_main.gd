@@ -122,7 +122,7 @@ class CarAgent:
         car.name = opponent_name
         car.connect("death", self, "_on_agent_crash")
         network = load("res://NEAT_usability/standalone_scripts/standalone_neuralnet.gd").new()
-        network.load_config(opponent_name)
+        network.load_config("user://network_configs/%s.json" % opponent_name)
 
     func update() -> void:
         # get sensory info from the car, feed it to the nn, use the output to steer the car
