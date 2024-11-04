@@ -56,3 +56,6 @@ JRob774 on opengameart -
 [link](github.com/ivanskodje-godotengine/Vehicle-Controller-2D)
 
 ### Every other asset was made by myself
+
+### Youtube-links
+[This](https://www.youtube.com/watch?v=6NDMqyDxrD4&list=PLI6w_Ue76Rw799q0-Mp25ilUL5ygkg7ux) is a small showcase, and [here](https://www.youtube.com/watch?v=eg8kELOfpjU&list=PLI6w_Ue76Rw799q0-Mp25ilUL5ygkg7ux&index=5) is a little explainer vid I did on neat
