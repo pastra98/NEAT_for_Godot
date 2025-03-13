@@ -20,7 +20,7 @@ var time = 0
 # time between physics steps until agents are updated again
 var time_step = 0.2 #Same time as in the training mode
 # is displayed either when the player car crashes, or the first car drives laps_to_complete
-onready var GameOverSplash = preload("res://demos/cars/race_mode/GameOverSplash.tscn")
+@onready var GameOverSplash = preload("res://demos/cars/race_mode/GameOverSplash.tscn")
 
 
 func setup_race(track_num: int, opponent_names: Array) -> void:
@@ -30,16 +30,16 @@ func setup_race(track_num: int, opponent_names: Array) -> void:
     curr_track_num = track_num
     # load the selected track, tracks are numbered 1, 2 and 3
     var track_path = "res://demos/cars/tracks/track_%s/Track_%s.tscn" % [track_num, track_num]
-    add_child(load(track_path).instance())
+    add_child(load(track_path).instantiate())
     # make a player car instance and adds it to the start
-    player = load("res://demos/cars/car/PlayerCar.tscn").instance()
+    player = load("res://demos/cars/car/PlayerCar.tscn").instantiate()
     $Track/PlayerStart.add_child(player)
     # connect a signal to open the game over screen when the player crashes
-    player.connect("player_crashed", self, "race_over")
+    player.connect("player_crashed", Callable(self, "race_over"))
     # generate CarAgents and add them to the track
     add_opponents_to_track(opponent_names)
     # set up a birds-eye-view camera of the track
-    var cam = load("res://NEAT_usability/camera/ZoomPanCam.tscn").instance()
+    var cam = load("res://NEAT_usability/camera/ZoomPanCam.tscn").instantiate()
     add_child(cam)
     cam.position = $Track/Center.position
     cam.zoom *= 1.3
@@ -86,9 +86,9 @@ func race_over(racer_name: String, player_crashed = true) -> void:
     """Open a 'game over' screen and connect a method that restarts the race.
     """
     paused = true
-    var game_over_splash = GameOverSplash.instance()
+    var game_over_splash = GameOverSplash.instantiate()
     game_over_splash.initialize(racer_name, laps_to_complete, player_crashed)
-    game_over_splash.connect("restart_race", self, "start_new_race")
+    game_over_splash.connect("restart_race", Callable(self, "start_new_race"))
     add_child(game_over_splash)
 
 
@@ -120,9 +120,9 @@ class CarAgent:
 
     func _init(opponent_name: String) -> void:
         # generate a new car scene and a standalone network
-        car = load("res://demos/cars/car/Car.tscn").instance()
+        car = load("res://demos/cars/car/Car.tscn").instantiate()
         car.name = opponent_name
-        car.connect("death", self, "_on_agent_crash")
+        car.connect("death", Callable(self, "_on_agent_crash"))
         network = load("res://NEAT_usability/standalone_scripts/standalone_neuralnet.gd").new()
         network.load_config(opponent_name)
 

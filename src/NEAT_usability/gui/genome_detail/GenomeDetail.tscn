@@ -5,99 +5,99 @@
 [ext_resource path="res://NEAT_usability/gui/genome_detail/NetworkDrawer.gd" type="Script" id=3]
 
 [node name="GenomeDetail" instance=ExtResource( 1 )]
-margin_right = 440.0
-margin_bottom = 335.0
+offset_right = 440.0
+offset_bottom = 335.0
 size_flags_horizontal = 7
 size_flags_vertical = 7
 script = ExtResource( 2 )
 
 [node name="Background" parent="." index="0"]
-margin_right = 440.0
-margin_bottom = 349.0
+offset_right = 440.0
+offset_bottom = 349.0
 size_flags_vertical = 3
 
 [node name="WindowLayout" parent="." index="1"]
-margin_right = 440.0
-margin_bottom = 349.0
+offset_right = 440.0
+offset_bottom = 349.0
 size_flags_vertical = 7
 
 [node name="Decorator" parent="WindowLayout" index="0"]
-margin_right = 440.0
+offset_right = 440.0
 
 [node name="Panel" parent="WindowLayout/Decorator" index="0"]
-margin_right = 440.0
+offset_right = 440.0
 
 [node name="DecSeperator" parent="WindowLayout/Decorator" index="1"]
-margin_right = 440.0
+offset_right = 440.0
 
 [node name="WindowName" parent="WindowLayout/Decorator/DecSeperator" index="0"]
-margin_right = 404.0
+offset_right = 404.0
 text = "Genome Inspector"
 
 [node name="Close" parent="WindowLayout/Decorator/DecSeperator" index="1"]
-margin_left = 408.0
-margin_right = 440.0
+offset_left = 408.0
+offset_right = 440.0
 
 [node name="GenomeDetailContent" type="MarginContainer" parent="WindowLayout" index="1"]
-margin_top = 30.0
-margin_right = 440.0
-margin_bottom = 349.0
+offset_top = 30.0
+offset_right = 440.0
+offset_bottom = 349.0
 size_flags_horizontal = 3
 size_flags_vertical = 7
-custom_constants/margin_right = 20
-custom_constants/margin_top = 5
-custom_constants/margin_left = 20
-custom_constants/margin_bottom = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_bottom = 20
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="ContentSeperator" type="VBoxContainer" parent="WindowLayout/GenomeDetailContent" index="0"]
-margin_left = 20.0
-margin_top = 5.0
-margin_right = 420.0
-margin_bottom = 299.0
+offset_left = 20.0
+offset_top = 5.0
+offset_right = 420.0
+offset_bottom = 299.0
 size_flags_vertical = 7
-custom_constants/separation = 20
+theme_override_constants/separation = 20
 
 [node name="Details" type="Label" parent="WindowLayout/GenomeDetailContent/ContentSeperator" index="0"]
-margin_right = 400.0
-margin_bottom = 14.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_colors/font_outline_modulate = Color( 0.351563, 0.351563, 0.351563, 1 )
-custom_colors/font_color_shadow = Color( 0.694118, 0.694118, 0.694118, 1 )
+offset_right = 400.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
+theme_override_colors/font_outline_color = Color( 0.351563, 0.351563, 0.351563, 1 )
+theme_override_colors/font_shadow_color = Color( 0.694118, 0.694118, 0.694118, 1 )
 
 [node name="NetworkDrawer" type="Control" parent="WindowLayout/GenomeDetailContent/ContentSeperator" index="1"]
-margin_top = 34.0
-margin_right = 400.0
-margin_bottom = 234.0
-rect_min_size = Vector2( 400, 200 )
+offset_top = 34.0
+offset_right = 400.0
+offset_bottom = 234.0
+custom_minimum_size = Vector2( 400, 200 )
 script = ExtResource( 3 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowLayout/GenomeDetailContent/ContentSeperator" index="2"]
-margin_top = 254.0
-margin_right = 400.0
-margin_bottom = 294.0
+offset_top = 254.0
+offset_right = 400.0
+offset_bottom = 294.0
 
 [node name="Label" type="Label" parent="WindowLayout/GenomeDetailContent/ContentSeperator/HBoxContainer" index="0"]
-margin_top = 13.0
-margin_right = 106.0
-margin_bottom = 27.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_colors/font_outline_modulate = Color( 0.537255, 0.537255, 0.537255, 1 )
-custom_colors/font_color_shadow = Color( 0.690196, 0.690196, 0.690196, 1 )
+offset_top = 13.0
+offset_right = 106.0
+offset_bottom = 27.0
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
+theme_override_colors/font_outline_color = Color( 0.537255, 0.537255, 0.537255, 1 )
+theme_override_colors/font_shadow_color = Color( 0.690196, 0.690196, 0.690196, 1 )
 text = "Highlight Agent: "
 
 [node name="HighlightToggle" type="CheckButton" parent="WindowLayout/GenomeDetailContent/ContentSeperator/HBoxContainer" index="1"]
-margin_left = 110.0
-margin_right = 186.0
-margin_bottom = 40.0
+offset_left = 110.0
+offset_right = 186.0
+offset_bottom = 40.0
 pressed = true
 
 [node name="SaveNetwork" type="Button" parent="WindowLayout/GenomeDetailContent/ContentSeperator/HBoxContainer" index="2"]
-margin_left = 190.0
-margin_right = 400.0
-margin_bottom = 40.0
+offset_left = 190.0
+offset_right = 400.0
+offset_bottom = 40.0
 size_flags_horizontal = 3
 text = "Save Network"
 __meta__ = {

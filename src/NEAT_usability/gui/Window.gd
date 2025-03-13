@@ -12,7 +12,7 @@ var drag_position = null
 func _ready() -> void:
     """connect signal to parent of window (=gui node), to focus window when dragged
     """
-    connect("focus_window", owner.get_parent(), "move_window_to_top")
+    connect("focus_window", Callable(owner.get_parent(), "move_window_to_top"))
 
 
 func _on_Decorator_gui_input(event) -> void:
@@ -21,14 +21,14 @@ func _on_Decorator_gui_input(event) -> void:
     if event is InputEventMouseButton and event.button_index == 1:
         if event.pressed:
             # start dragging
-            drag_position = get_global_mouse_position() - rect_global_position
+            drag_position = get_global_mouse_position() - global_position
             emit_signal("focus_window", owner)
         else:
             # end dragging
             drag_position = null
     # now update the window pos accordingly
     if event is InputEventMouseMotion and drag_position:
-        owner.rect_global_position = get_global_mouse_position() - drag_position
+        owner.global_position = get_global_mouse_position() - drag_position
 
 
 func _on_Close_button_down() -> void:

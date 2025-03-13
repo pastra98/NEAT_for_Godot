@@ -9,15 +9,15 @@ GenomeDetail window.
 
 # various child nodes this scene uses
 var content_path = "WindowLayout/SpeciesListContent/ContentSeperator/"
-onready var generation_label = get_node("WindowLayout/InfoContainer/GenInfo")
-onready var visibility_menu = get_node("WindowLayout/InfoContainer/VisMenu")
-onready var member_list = get_node(content_path + "SpeciesDetail/ScrollContainer/MemberList")
-onready var species_info = get_node(content_path + "SpeciesDetail/SpeciesInfo")
-onready var species_list = get_node(content_path + "SpeciesOverview/ScrollContainer/SpeciesList")
-onready var population_info = get_node(content_path + "SpeciesOverview/PopulationInfo")
+@onready var generation_label = get_node("WindowLayout/InfoContainer/GenInfo")
+@onready var visibility_menu = get_node("WindowLayout/InfoContainer/VisMenu")
+@onready var member_list = get_node(content_path + "SpeciesDetail/ScrollContainer/MemberList")
+@onready var species_info = get_node(content_path + "SpeciesDetail/SpeciesInfo")
+@onready var species_list = get_node(content_path + "SpeciesOverview/ScrollContainer/SpeciesList")
+@onready var population_info = get_node(content_path + "SpeciesOverview/PopulationInfo")
 
 # the ga node provides the information the species list needs
-onready var ga = get_node("../..")
+@onready var ga = get_node("../..")
 
 # variables for displaying text
 var default_label_text = "Displaying Generation: "
@@ -47,14 +47,14 @@ func _ready() -> void:
     """
     generation_label.text = default_label_text + str(ga.curr_generation) + " (current)"
     # call loading functions when clicking on species or genome
-    species_list.connect("item_selected", self, "load_species")
-    member_list.connect("item_selected", self, "load_genome")
+    species_list.connect("item_selected", Callable(self, "load_species"))
+    member_list.connect("item_selected", Callable(self, "load_genome"))
     # add the current visibility options to the visibility_menu popup and connect
     # to ga.change_visibility() method and method that updates text on menu
     for option in Params.visibility_options:
         visibility_menu.get_popup().add_item(option)
-    visibility_menu.get_popup().connect("index_pressed", ga, "update_visibility")
-    visibility_menu.get_popup().connect("index_pressed", self, "update_vis_menu_text")
+    visibility_menu.get_popup().connect("index_pressed", Callable(ga, "update_visibility"))
+    visibility_menu.get_popup().connect("index_pressed", Callable(self, "update_vis_menu_text"))
     update_vis_menu_text(ga.curr_visibility)
     # show all current species
     update_species_list()

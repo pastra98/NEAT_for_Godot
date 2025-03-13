@@ -14,12 +14,12 @@ var name_chooser: LineEdit
 
 # references to the various child nodes used
 var content_path = "WindowLayout/GenomeDetailContent/ContentSeperator"
-onready var details = get_node(content_path + "/Details")
-onready var highlight_toggle = get_node(content_path + "/HBoxContainer/HighlightToggle")
-onready var save_button = get_node(content_path + "/HBoxContainer/SaveNetwork")
+@onready var details = get_node(content_path + "/Details")
+@onready var highlight_toggle = get_node(content_path + "/HBoxContainer/HighlightToggle")
+@onready var save_button = get_node(content_path + "/HBoxContainer/SaveNetwork")
 
 # the script that is actually responsible for drawing the network.
-onready var network_drawer = get_node(content_path + "/NetworkDrawer")
+@onready var network_drawer = get_node(content_path + "/NetworkDrawer")
 
 
 func _ready() -> void:
@@ -33,17 +33,17 @@ func _ready() -> void:
         _on_HighlightToggle_toggled(true)
     # disable the highlighter if this is saved in the Params
     else:
-        highlight_toggle.pressed = false
+        highlight_toggle.button_pressed = false
         highlight_toggle.disabled = true
     # indicate whether the genome is dead, update the decorator to show the genome's name
     var dead = "[dead] " if inspected_genome.agent.is_dead else ""
     $WindowLayout/Decorator.set_window_name("inspecting genome nr. " + dead +
                                             str(inspected_genome.id))
     # connect a signal to the body of the genome, to indicate when it dies in the decorator
-    inspected_genome.agent.body.connect("death", self, "mark_agent_dead")
+    inspected_genome.agent.body.connect("death", Callable(self, "mark_agent_dead"))
     # lastly show the depth of the network and draw it
     details.text = "Depth: " + str(inspected_genome.agent.network.depth)
-    network_drawer.update()
+    network_drawer.queue_redraw()
 
 
 func update_inspected_genome(new_genome: Genome) -> void:
@@ -56,7 +56,7 @@ func update_inspected_genome(new_genome: Genome) -> void:
                                             str(inspected_genome.id))
     # lastly show the depth of the network and draw it
     details.text = "Depth: " + str(inspected_genome.agent.network.depth)
-    network_drawer.update()
+    network_drawer.queue_redraw()
 
 
 func mark_agent_dead() -> void:
@@ -78,9 +78,7 @@ func _on_SaveNetwork_button_down() -> void:
         name_chooser = LineEdit.new()
         # The default name for a saved genome consists of the current time +
         # the genome id to avoid duplicates
-        var time = OS.get_time()
-        var time_str = "%0*d"%[2, time["hour"]]+"_"+"%0*d"%[2, time["minute"]]+"__"
-        name_chooser.text = time_str + str(inspected_genome.id)
+        name_chooser.text = Time.get_date_string_from_system() + str(inspected_genome.id)
         # change the save button text to show that pressing again will confirm save
         save_button.text = "Confirm Save"
         # add the new line edit as a child

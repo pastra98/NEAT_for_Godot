@@ -7,17 +7,17 @@ saved.
 """
 
 # instance of the standalone_neuralnet used to obtain a list of saved network configurations.
-onready var net = load("res://NEAT_usability/standalone_scripts/standalone_neuralnet.gd").new()
+@onready var net = load("res://NEAT_usability/standalone_scripts/standalone_neuralnet.gd").new()
 # path to the hbox node that contains the buttons used to launch the demos
 var options_path = "MarginContainer/VBoxContainer/Options"
 # the buttons that open the submenus for setting up Training or a Race
-onready var training_button = get_node(options_path + "/TrainingMode")
-onready var racing_button = get_node(options_path + "/RacingMode")
+@onready var training_button = get_node(options_path + "/TrainingMode")
+@onready var racing_button = get_node(options_path + "/RacingMode")
 # vbox nodes that contain item lists for choosing the track and AI opponents
-onready var tracks = get_node(options_path + "/Tracks")
-onready var opponents = get_node(options_path + "/Opponents")
+@onready var tracks = get_node(options_path + "/Tracks")
+@onready var opponents = get_node(options_path + "/Opponents")
 # the button that launches the selected demo
-onready var start = get_node("MarginContainer/VBoxContainer/Start")
+@onready var start = get_node("MarginContainer/VBoxContainer/Start")
 # selected mode is stored as an enum 
 enum DEMO_MODE {training, race}
 var selected_mode: int
@@ -27,9 +27,9 @@ func _ready() -> void:
     """Connect the buttons, populate the itemlists for track and
     opponent selection.
     """
-    training_button.connect("pressed", self, "load_training_menu")
-    racing_button.connect("pressed", self, "load_racing_menu")
-    start.connect("pressed", self, "start_demo")
+    training_button.connect("pressed", Callable(self, "load_training_menu"))
+    racing_button.connect("pressed", Callable(self, "load_racing_menu"))
+    start.connect("pressed", Callable(self, "start_demo"))
     # tracks are named 1,2 and 3, the menu refers to them by training difficulty
     for track in ["easy", "medium", "hard"]:
         tracks.get_node("TrackSelect").add_item(track)
@@ -70,14 +70,14 @@ func start_demo() -> void:
     match selected_mode:
         DEMO_MODE.training:
             # scene needs to be instanced in order to pass parameters to it.
-            var car_main = load("res://demos/cars/CarMain.tscn").instance()
+            var car_main = load("res://demos/cars/CarMain.tscn").instantiate()
             # pass the selected track to the instanced scene
             car_main.load_track(track_num)
             # switch to car_main scene instance
             switch_to_instanced_scene(car_main)
         DEMO_MODE.race:
             # instance a racing scene
-            var car_race_main = load("res://demos/cars/race_mode/CarRaceMain.tscn").instance()
+            var car_race_main = load("res://demos/cars/race_mode/CarRaceMain.tscn").instantiate()
             # get the selected network configurations from the itemlist
             var opponent_names = []
             for i in opponents.get_node("OpponentSelect").get_selected_items():
@@ -89,7 +89,7 @@ func start_demo() -> void:
 
 
 func switch_to_instanced_scene(scene) -> void:
-    """Cannot use change_scene() or change_scene_to() methods because those methods instance
+    """Cannot use change_scene_to_file() or change_scene_to_packed() methods because those methods instance
     the given scene themselves. This makes it impossible to pass arguments to them before
     switching. This method simply adds the scene instance as a child, sets it as the current
     scene, and then removes itself (the CarSplash scene) from the tree.

@@ -297,7 +297,7 @@ func next_timestep() -> void:
             new_agents.append(agent)
     # replace curr_agents with all agents that are alive, therefore removing dead ones
     curr_agents = new_agents
-    if curr_agents.empty():
+    if curr_agents.is_empty():
         all_agents_dead = true
 
 
@@ -362,7 +362,7 @@ func update_curr_species() -> Array:
     for species in updated_species:
         species.calculate_offspring_amount(total_adjusted_species_avg_fitness)
     # order the updated species by fitness, select the current best species, return
-    updated_species.sort_custom(self, "sort_by_spec_fitness")
+    updated_species.sort_custom(Callable(self, "sort_by_spec_fitness"))
     best_species = updated_species.front()
     return updated_species
 

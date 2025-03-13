@@ -18,16 +18,16 @@ should not be used to generate classifiers (as there are much better ways of doi
 var agent_body_path = "res://demos/xor/xor_tester/XorTester.tscn"
 # Initialize a GeneticAlgorithm Node with 2 inputs, 1 output and no default gui
 # setup. Load xor config.
-onready var ga = GeneticAlgorithm.new(2, 1, agent_body_path, false, "xor_params")
+@onready var ga = GeneticAlgorithm.new(2, 1, agent_body_path, false, "xor_params")
 
 # A single GenomeDetail window is used here to show the currently fittest network
 # It is the only element from NEAT GUI that is used here
-onready var genome_detail = load("res://NEAT_usability/gui/genome_detail/GenomeDetail.tscn").instance()
+@onready var genome_detail = load("res://NEAT_usability/gui/genome_detail/GenomeDetail.tscn").instantiate()
 
 # the maximum score that can be reached is 4. 1 fitness point per solved xor
 var fitness_threshold = 3.9
 # A splash screen on how to continue after reaching fitness threshold
-onready var DemoCompletedSplash = preload("res://demos/demo_loader/DemoCompletedSplash.tscn")
+@onready var DemoCompletedSplash = preload("res://demos/demo_loader/DemoCompletedSplash.tscn")
 # While the splashscreen is open, do not continue the genetic algorithm
 var paused = false
 
@@ -42,7 +42,7 @@ func _ready() -> void:
     # inspect a random genome in the first gen
     genome_detail.inspected_genome = Utils.random_choice(ga.curr_genomes)
     add_child(genome_detail)
-    genome_detail.rect_position = rect_size / 3.5
+    genome_detail.position = size / 3.5
 
 
 func _process(_delta):
@@ -93,9 +93,9 @@ func end_xor_test() -> void:
     ga.curr_best.agent.network.save_to_json("best_xor")
     test_network("best_xor")
     # open a new splashscreen
-    var demo_completed_splash = DemoCompletedSplash.instance()
+    var demo_completed_splash = DemoCompletedSplash.instantiate()
     demo_completed_splash.initialize(ga, fitness_threshold)
-    demo_completed_splash.connect("set_new_threshold", self, "continue_ga")
+    demo_completed_splash.connect("set_new_threshold", Callable(self, "continue_ga"))
     add_child(demo_completed_splash)
 
     

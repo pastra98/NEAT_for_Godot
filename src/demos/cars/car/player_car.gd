@@ -48,11 +48,11 @@ var completed_half_lap = false
 # variable prevents this.
 var has_cheated = false
 var num_completed_laps = 0
-onready var center = get_node("../../Center")
-onready var start = get_node("../../Start")
+@onready var center = get_node("../../Center")
+@onready var start = get_node("../../Start")
 
 # labels showing what the cars senses read
-onready var labels = $Labels
+@onready var labels = $Labels
 
 # keep track of the time since the last physics update, to update sensor information
 # in regular intervals (0.2 seconds).
@@ -66,7 +66,7 @@ func _ready():
     collides with the bounds. Generate raycasts to measure the distance to the bounds.
     """
     # connect a signal from track bounds, to detect when a crash occurs
-    get_node("../../Bounds").connect("body_entered", self, "crash")
+    get_node("../../Bounds").connect("body_entered", Callable(self, "crash"))
     # Top Down Physics
     set_gravity_scale(0.0)
     # Generate specified number of raycasts 
@@ -76,7 +76,7 @@ func _ready():
         for _new_caster in num_casts:
             var caster = RayCast2D.new()
             var cast_point = Vector2(0, -sight_range).rotated(cast_angle)
-            caster.enabled = false; caster.cast_to = cast_point
+            caster.enabled = false; caster.target_position = cast_point
             # only scan for bounds. maybe do this with groups later?
             caster.collide_with_areas = true; caster.collide_with_bodies = false
             add_child(caster); raycasters.append(caster)
@@ -153,14 +153,14 @@ func sense() -> Array:
             if caster.is_colliding():
                 var collision = caster.get_collision_point()
                 var distance = (collision - global_position).length()
-                var relative_distance = range_lerp(distance, 0, sight_range, 0, 2)
+                var relative_distance = remap(distance, 0, sight_range, 0, 2)
                 senses.append(relative_distance)
             else:
                 senses.append(1)
         # update the labels
         for i in labels.get_child_count():
             labels.get_child(i).text = str(senses[i])
-    var rel_speed = range_lerp(speed, -max_forward_velocity, max_forward_velocity, 0, 2)
+    var rel_speed = remap(speed, -max_forward_velocity, max_forward_velocity, 0, 2)
     # Append relative speed, angular_velocity and _drift_factor to the cars senses
     senses.append(rel_speed)
     senses.append(angular_velocity)
@@ -200,7 +200,7 @@ func crash(body) -> void:
     """
     if body == self:
         $Explosion.show(); $Explosion.play()
-        $Sprite.hide()
+        $Sprite2D.hide()
         emit_signal("player_crashed", "The Player")
 
 

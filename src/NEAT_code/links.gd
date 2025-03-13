@@ -1,5 +1,5 @@
 class_name Link
-extends Reference
+extends RefCounted
 
 
 """Because NEAT doesn't have a concept of network layers, neurons are connected via

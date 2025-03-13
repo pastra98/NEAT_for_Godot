@@ -43,8 +43,8 @@ var completed_half_lap = false
 var has_cheated = false
 var num_completed_laps = 0
 #
-onready var center = get_node("../../Center")
-onready var start = get_node("../../Start")
+@onready var center = get_node("../../Center")
+@onready var start = get_node("../../Start")
 
 # signal that let's the controlling agent know it just died
 signal death
@@ -54,7 +54,7 @@ func _ready() -> void:
     collides with the bounds. Generate raycasts to measure the distance to the bounds.
     """
     # connect a signal from track bounds, to detect when a crash occurs
-    get_node("../../Bounds").connect("body_entered", self, "crash")
+    get_node("../../Bounds").connect("body_entered", Callable(self, "crash"))
     # Top Down Physics
     set_gravity_scale(0.0)
     # Generate specified number of raycasts 
@@ -64,7 +64,7 @@ func _ready() -> void:
         var caster = RayCast2D.new()
         var cast_point = Vector2(0, -sight_range).rotated(cast_angle)
         caster.enabled = false
-        caster.cast_to = cast_point
+        caster.target_position = cast_point
         caster.collide_with_areas = true
         caster.collide_with_bodies = false
         add_child(caster)
@@ -121,11 +121,11 @@ func sense() -> Array:
         if caster.is_colliding():
             var collision = caster.get_collision_point()
             var distance = (collision - global_position).length()
-            var relative_distance = range_lerp(distance, 0, sight_range, 0, 2)
+            var relative_distance = remap(distance, 0, sight_range, 0, 2)
             senses.append(relative_distance)
         else:
             senses.append(1)
-    var rel_speed = range_lerp(speed, -max_forward_velocity, max_forward_velocity, 0, 2)
+    var rel_speed = remap(speed, -max_forward_velocity, max_forward_velocity, 0, 2)
     # Append relative speed, angular_velocity and _drift_factor to the cars senses
     senses.append(rel_speed)
     senses.append(angular_velocity)
@@ -145,10 +145,10 @@ func act(actions: Array) -> void:
         _velocity -= -transform.y * acceleration
     # steer right
     if actions[2] > 0.2:
-        _angular_velocity = range_lerp(actions[2], 0.2, 1, 0, 1) * torque * sign(speed)
+        _angular_velocity = remap(actions[2], 0.2, 1, 0, 1) * torque * sign(speed)
     # steer left
     elif actions[3] > 0.2:
-        _angular_velocity = range_lerp(actions[3], 0.2, 1, 0, 1) * -torque * sign(speed)
+        _angular_velocity = remap(actions[3], 0.2, 1, 0, 1) * -torque * sign(speed)
     # Prevent exceeding max velocity
     var max_speed = (Vector2(0, -1) * max_forward_velocity).rotated(rotation)
     var x = clamp(_velocity.x, -abs(max_speed.x), abs(max_speed.x))
@@ -191,7 +191,7 @@ func crash(body) -> void:
     """
     if body == self:
         $Explosion.show(); $Explosion.play()
-        $Sprite.hide()
+        $Sprite2D.hide()
         emit_signal("death")
 
 

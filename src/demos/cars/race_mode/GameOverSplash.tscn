@@ -1,13 +1,13 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://demos/cars/race_mode/game_over_splash.gd" type="Script" id=1]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-black-italic.tres" type="DynamicFont" id=2]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-black-italic.tres" type="FontFile" id=2]
 
 [sub_resource type="Gradient" id=1]
-offsets = PoolRealArray( 0, 0.896774 )
-colors = PoolColorArray( 0.529412, 0.192157, 0.541176, 1, 0.333333, 0.454902, 0.705882, 1 )
+offsets = PackedFloat32Array( 0, 0.896774 )
+colors = PackedColorArray( 0.529412, 0.192157, 0.541176, 1, 0.333333, 0.454902, 0.705882, 1 )
 
-[sub_resource type="GradientTexture" id=2]
+[sub_resource type="GradientTexture2D" id=2]
 gradient = SubResource( 1 )
 
 [sub_resource type="StyleBoxEmpty" id=3]
@@ -17,8 +17,8 @@ anchor_left = 0.280469
 anchor_top = 0.316667
 anchor_right = 0.719531
 anchor_bottom = 0.683333
-margin_right = 0.400085
-rect_min_size = Vector2( 450, 220 )
+offset_right = 0.400085
+custom_minimum_size = Vector2( 450, 220 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": true
@@ -27,8 +27,8 @@ __meta__ = {
 [node name="Background" type="TextureRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -6.10352e-05
-margin_bottom = -1.52588e-05
+offset_right = -6.10352e-05
+offset_bottom = -1.52588e-05
 texture = SubResource( 2 )
 expand = true
 __meta__ = {
@@ -39,8 +39,8 @@ __meta__ = {
 anchor_top = 0.1
 anchor_right = 1.0
 anchor_bottom = 0.6
-margin_right = 0.400024
-margin_bottom = 6.0
+offset_right = 0.400024
+offset_bottom = 6.0
 size_flags_horizontal = 4
 align = 1
 __meta__ = {
@@ -52,18 +52,18 @@ anchor_left = 0.05
 anchor_top = 0.75
 anchor_right = 0.35
 anchor_bottom = 0.9
-margin_left = 0.0800018
-margin_top = 0.019989
-margin_right = -0.142395
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 3 )
-custom_styles/focus = SubResource( 3 )
-custom_styles/disabled = SubResource( 3 )
-custom_styles/normal = SubResource( 3 )
-custom_fonts/font = ExtResource( 2 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_colors/font_color_hover = Color( 0.823529, 0.823529, 0.823529, 1 )
-custom_colors/font_color_pressed = Color( 0.623529, 0.623529, 0.623529, 1 )
+offset_left = 0.0800018
+offset_top = 0.019989
+offset_right = -0.142395
+theme_override_styles/hover = SubResource( 3 )
+theme_override_styles/pressed = SubResource( 3 )
+theme_override_styles/focus = SubResource( 3 )
+theme_override_styles/disabled = SubResource( 3 )
+theme_override_styles/normal = SubResource( 3 )
+theme_override_fonts/font = ExtResource( 2 )
+theme_override_colors/font_color = Color( 1, 1, 1, 1 )
+theme_override_colors/font_hover_color = Color( 0.823529, 0.823529, 0.823529, 1 )
+theme_override_colors/font_pressed_color = Color( 0.623529, 0.623529, 0.623529, 1 )
 text = "Return to demos"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -74,18 +74,18 @@ anchor_left = 0.433
 anchor_top = 0.75
 anchor_right = 0.95
 anchor_bottom = 0.9
-margin_left = 0.0800018
-margin_top = 0.019989
-margin_right = -0.142395
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 3 )
-custom_styles/focus = SubResource( 3 )
-custom_styles/disabled = SubResource( 3 )
-custom_styles/normal = SubResource( 3 )
-custom_fonts/font = ExtResource( 2 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_colors/font_color_hover = Color( 0.823529, 0.823529, 0.823529, 1 )
-custom_colors/font_color_pressed = Color( 0.623529, 0.623529, 0.623529, 1 )
+offset_left = 0.0800018
+offset_top = 0.019989
+offset_right = -0.142395
+theme_override_styles/hover = SubResource( 3 )
+theme_override_styles/pressed = SubResource( 3 )
+theme_override_styles/focus = SubResource( 3 )
+theme_override_styles/disabled = SubResource( 3 )
+theme_override_styles/normal = SubResource( 3 )
+theme_override_fonts/font = ExtResource( 2 )
+theme_override_colors/font_color = Color( 1, 1, 1, 1 )
+theme_override_colors/font_hover_color = Color( 0.823529, 0.823529, 0.823529, 1 )
+theme_override_colors/font_pressed_color = Color( 0.623529, 0.623529, 0.623529, 1 )
 text = "Retry"
 __meta__ = {
 "_edit_use_anchors_": false

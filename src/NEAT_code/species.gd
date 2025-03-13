@@ -1,5 +1,5 @@
 class_name Species
-extends Reference
+extends RefCounted
 
 """Species are a means for the NEAT algorithm to group structurally similar networks
 together. The GeneticAlgorithm class uses species to provide new genomes by either
@@ -64,7 +64,7 @@ func update() -> void:
     # first check if the species hasn't spawned new members in the last gen or if it
     # survived for too many generations without improving, in which case it is marked
     # for obliteration.
-    if alive_members.empty() or num_gens_no_improvement > Params.allowed_gens_no_improvement:
+    if alive_members.is_empty() or num_gens_no_improvement > Params.allowed_gens_no_improvement:
         obliterate = true
     else:
         # the species survives into the next generation
@@ -72,7 +72,7 @@ func update() -> void:
         num_to_spawn = 0
         age += 1
         # first sort the alive members, and determine the fittest member
-        alive_members.sort_custom(self, "sort_by_fitness")
+        alive_members.sort_custom(Callable(self, "sort_by_fitness"))
         leader = alive_members[0]
         num_members = alive_members.size()
         # check if current best member is fitter than previous best

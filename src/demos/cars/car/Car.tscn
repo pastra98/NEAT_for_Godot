@@ -1,8 +1,8 @@
 [gd_scene load_steps=18 format=2]
 
-[ext_resource path="res://demos/cars/car/ai_car.png" type="Texture" id=1]
+[ext_resource path="res://demos/cars/car/ai_car.png" type="Texture2D" id=1]
 [ext_resource path="res://demos/cars/car/car.gd" type="Script" id=2]
-[ext_resource path="res://demos/cars/car/explosion.png" type="Texture" id=3]
+[ext_resource path="res://demos/cars/car/explosion.png" type="Texture2D" id=3]
 
 
 [sub_resource type="CapsuleShape2D" id=1]
@@ -81,7 +81,7 @@ rotation = 1.5708
 collision_mask = 0
 script = ExtResource( 2 )
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2( 0.16, 0.16 )
 texture = ExtResource( 1 )
 
@@ -89,7 +89,7 @@ texture = ExtResource( 1 )
 scale = Vector2( 0.7, 0.7 )
 shape = SubResource( 1 )
 
-[node name="Explosion" type="AnimatedSprite" parent="."]
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
 visible = false
 scale = Vector2( 0.7, 0.7 )
 frames = SubResource( 14 )

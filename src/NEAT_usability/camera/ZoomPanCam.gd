@@ -6,27 +6,27 @@ const ZOOM_SPEED = Vector2(0.2, 0.2)
 const MIN_ZOOM = 0.25
 const MAX_ZOOM = 10
 
-onready var wanted_zoom = zoom
-onready var wanted_position = position
+@onready var wanted_zoom = zoom
+@onready var wanted_position = position
 var dragging = false
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		match event.button_index:
-			BUTTON_RIGHT: # Right button
+			MOUSE_BUTTON_RIGHT: # Right button
 				dragging = true
 				if dragging and not event.pressed:
 					dragging = false
 					
-			BUTTON_WHEEL_UP: # Scroll wheel up
+			MOUSE_BUTTON_WHEEL_UP: # Scroll wheel up
 				wanted_zoom -= ZOOM_SPEED
 				if wanted_zoom.x > MIN_ZOOM:
-					wanted_position = wanted_position.linear_interpolate(get_global_mouse_position(), 0.3)
+					wanted_position = wanted_position.lerp(get_global_mouse_position(), 0.3)
 				
-			BUTTON_WHEEL_DOWN: # Scroll wheel down
+			MOUSE_BUTTON_WHEEL_DOWN: # Scroll wheel down
 				wanted_zoom += ZOOM_SPEED
 				if wanted_zoom.x < MAX_ZOOM:
-					wanted_position = wanted_position.linear_interpolate(get_global_mouse_position(), -0.1)
+					wanted_position = wanted_position.lerp(get_global_mouse_position(), -0.1)
 			_:
 				pass
 		
@@ -38,8 +38,8 @@ func _unhandled_input(event):
 
 func _process(delta):
 	# Move/Zoom the camera smoothly
-	zoom = zoom.linear_interpolate(wanted_zoom, 4*delta)
-	position = position.linear_interpolate(wanted_position, 5*delta)
+	zoom = zoom.lerp(wanted_zoom, 4*delta)
+	position = position.lerp(wanted_position, 5*delta)
 
 
 

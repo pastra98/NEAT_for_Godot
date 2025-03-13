@@ -11,7 +11,7 @@ and to the left and right.
 var main_power = 40
 var side_power = 15
 # nested array containing animations, firing directions and strengths for every thruster
-onready var thrusters = [
+@onready var thrusters = [
     [$Thrusters/LeftThruster, Vector2(1, 0), side_power],
     [$Thrusters/RightThruster, Vector2(-1, 0), side_power],
     [$Thrusters/MainThruster, Vector2(0, -1), main_power]
@@ -81,7 +81,7 @@ func get_relative_distance_and_slope(caster: RayCast2D) -> Array:
     """
     caster.force_raycast_update()
     var distance = (caster.get_collision_point() - global_position).length()
-    var relative_distance = distance / caster.cast_to.length()
+    var relative_distance = distance / caster.target_position.length()
     var slope = caster.get_collision_normal().x
     return [relative_distance, slope]
 
@@ -193,7 +193,7 @@ func check_ground_contact() -> void:
 func crash() -> void:
     """Show an explosion and emit the death signal, causing the fitness to be evaluated.
     """
-    $Sprite.hide(); $Thrusters.hide()
+    $Sprite2D.hide(); $Thrusters.hide()
     $Explosion.show()
     $Explosion.play()
     emit_signal("death")
@@ -202,7 +202,7 @@ func crash() -> void:
 func land() -> void:
     """Plant a flag and emit the death signal, causing the fitness to be evaluated.
     """
-    $Sprite.hide(); $Thrusters.hide()
+    $Sprite2D.hide(); $Thrusters.hide()
     $Flag.show()
     landed_successfully = true
     emit_signal("death")

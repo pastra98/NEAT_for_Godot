@@ -16,7 +16,7 @@ func _draw():
     for neuron_id in neurons_dict.keys():
         # determine the position of the neuron on the canvas and it's color
         var neuron = neurons_dict[neuron_id]
-        var draw_pos = neuron.position * rect_size
+        var draw_pos = neuron.position * size
         var draw_col = Params.neuron_colors[neuron.neuron_type]
         # first draw all links connecting to the neuron
         for link in neuron.input_connections:
@@ -31,13 +31,13 @@ func _draw():
             elif link[1] <= 0:
                 w_col.r = w_col_str; w_col.g = w_col_str
             # draw links as tris to indicate their firing direction
-            var in_pos = link[0].position * rect_size
+            var in_pos = link[0].position * size
             var spacing = Vector2(0, 5)
-            var tri_points = PoolVector2Array([in_pos+spacing, draw_pos, in_pos-spacing])
-            var colors = PoolColorArray([Color.white, w_col, Color.white])
+            var tri_points = PackedVector2Array([in_pos+spacing, draw_pos, in_pos-spacing])
+            var colors = PackedColorArray([Color.WHITE, w_col, Color.WHITE])
             draw_primitive(tri_points, colors, tri_points)
         # finally draw the neuron last, so it overlaps all the links
         draw_circle(draw_pos, 6, draw_col)
         # mark if a loop link is connected to the neuron
         if neuron.loop_back:
-            draw_char(roboto, draw_pos, "L", "", Color.black)
+            draw_char(roboto, draw_pos, "L")

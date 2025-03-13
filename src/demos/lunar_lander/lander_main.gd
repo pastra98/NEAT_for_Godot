@@ -10,7 +10,7 @@ var time = 0
 # total_time gets reset every time a new generation is started
 var total_time = 0
 # every time_step the landers network takes sensory information and decides how to act
-export var time_step = 0.1
+@export var time_step = 0.1
 # if a lander gets stuck stuck without crashing or landing, this ensures that a
 # generation can only last for up to a minute
 var max_generation_time = 60
@@ -25,7 +25,7 @@ var ga = GeneticAlgorithm.new(6, 3, agent_body_path, true, "lander_params")
 # if the current generation matches a key, the dropping location of the landers,
 # along with the force which the landers receive as an initial impulse on the x axis
 # get changed.
-onready var training_program = {
+@onready var training_program = {
     1 : [$Moon/DropoffLocation1, 0],
     5 : [$Moon/DropoffLocation1, 45],
     15 : [$Moon/DropoffLocation1, 90],
@@ -35,7 +35,7 @@ onready var training_program = {
     50 : [$Moon/DropoffLocation3, 180]
 }
 # drop landers for the first 15 generations from Location 1 with no initial impulse
-onready var curr_training = training_program[1]
+@onready var curr_training = training_program[1]
 
 func _ready() -> void:
     """Add the GeneticAlgorithm Node as a child, obtain the lander instances generated

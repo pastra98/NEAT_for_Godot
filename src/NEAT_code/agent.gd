@@ -1,5 +1,5 @@
 class_name Agent
-extends Reference
+extends RefCounted
 
 """ Agents may only be created by the GeneticAlgorithm class. Agents generate the
 entity that interacts with the world. This is the agents body. The Agent is also
@@ -20,7 +20,7 @@ Lastly, the agent must emit a 'death' signal if it dies.
 
 # the body must be a scene due to the call to instance. If a simple script should
 # be used, change instance() to new()
-var body = load(Params.agent_body_path).instance()
+var body = load(Params.agent_body_path).instantiate()
 # Reference to the neural network that is encoded by the genome
 var network: NeuralNet
 
@@ -37,7 +37,7 @@ func _init(neural_net: NeuralNet, is_leader_clone: bool) -> void:
     """
     network = neural_net
     # connect the death signal of the body
-    body.connect("death", self, "on_body_death")
+    body.connect("death", Callable(self, "on_body_death"))
     # make a highlighter only if the NEAT GUI is used
     if Params.use_gui:
         highlighter = load("res://NEAT_usability/gui/highlighter.gd").new()

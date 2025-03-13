@@ -1,5 +1,5 @@
 class_name NeuralNet
-extends Reference
+extends RefCounted
 
 """This class builds a neural network with a very simple update() function which
 takes in an array of inputs with a fixed size and returns outputs of a fixed size.
@@ -20,7 +20,7 @@ var outputs = []
 # the output that will be returned by the network.
 var output = []
 # the currently used activation func, determined by the Params class.
-var activation_func: FuncRef
+var activation_func: Callable
 # Contains all links in the genome. Only needed during save_to_json.
 var enabled_links: Array
 
@@ -60,14 +60,14 @@ func _init(neurons: Dictionary, links: Dictionary) -> void:
             to_neuron.connect_input(from_neuron, link.weight)
     # sort neurons such that they are evaluated left to right, feed_back
     # and loop_back connections are however still delayed (that is desired)
-    hiddens.sort_custom(self, "sort_neurons_by_pos_x")
-    hiddens.sort_custom(self, "sort_neurons_by_pos_y")
+    hiddens.sort_custom(Callable(self, "sort_neurons_by_pos_x"))
+    hiddens.sort_custom(Callable(self, "sort_neurons_by_pos_y"))
     # if networks run on active, every neuron is updated once per update(), if they
     # run snapshot, every n. is activ. often enough until inp. is flushed to outputs
     depth = calculate_depth(hiddens)
     flush_count = 1 if Params.is_runtype_active else depth
-    # set a funcref to the activation func that will be used
-    activation_func = funcref(self, Params.curr_activation_func)
+    # set a Callable to the activation func that will be used
+    activation_func = Callable(self, Params.curr_activation_func)
 
 
 func update(input_values: Array) -> Array:
@@ -84,7 +84,7 @@ func update(input_values: Array) -> Array:
     # feed the input neurons.
     for i in inputs.size():
         if Params.activate_inputs:
-            inputs[i].output = activation_func.call_func(input_values[i])
+            inputs[i].output = activation_func.call(input_values[i])
         else:
             inputs[i].output = input_values[i]
     # step through every hidden neuron (incl. outputs), sum up their weighted
@@ -95,7 +95,7 @@ func update(input_values: Array) -> Array:
             for connection in neuron.input_connections:
                 var input_neuron = connection[0]; var weight = connection[1]
                 weighted_sum += input_neuron.output * weight
-            neuron.output = activation_func.call_func(weighted_sum, neuron.activation_curve)
+            neuron.output = activation_func.call(weighted_sum, neuron.activation_curve)
     # copy output of output neurons into output array
     output.clear()
     for out_neuron in outputs:
@@ -114,8 +114,8 @@ func save_to_json(name: String) -> void:
     network_data["depth"] = depth
     # Save all neurons in sorted order
     var sorted_neurons = all_neurons.values()
-    sorted_neurons.sort_custom(self, "sort_neurons_by_pos_x")
-    sorted_neurons.sort_custom(self, "sort_neurons_by_pos_y")
+    sorted_neurons.sort_custom(Callable(self, "sort_neurons_by_pos_x"))
+    sorted_neurons.sort_custom(Callable(self, "sort_neurons_by_pos_y"))
     var neuron_data = []
     for neuron in sorted_neurons:
         var neuron_save = {
@@ -136,14 +136,12 @@ func save_to_json(name: String) -> void:
         link_data.append(link_save)
     network_data["links"] = link_data
     # now save the dictionary as a json file in the user path
-    var file = File.new()
-    var dir = Directory.new()
-    # make a new directory for network configs if necessary
-    if dir.open("user://network_configs") == ERR_INVALID_PARAMETER:
-        dir.make_dir("user://network_configs")
+    var dir = DirAccess.open("user://network_configs")
+    if not dir:
+        DirAccess.make_dir_absolute("user://network_configs")
     # save the network in the network directory
-    file.open("user://network_configs/%s.json" % name, File.WRITE)
-    file.store_string(JSON.print(network_data, "  "))
+    var file = FileAccess.open("user://network_configs/%s.json" % name, FileAccess.WRITE)
+    file.store_string(JSON.stringify(network_data, "  "))
     file.close()
 
 

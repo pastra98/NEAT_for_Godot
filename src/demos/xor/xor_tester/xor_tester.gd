@@ -31,7 +31,7 @@ func act(xor_output: Array) -> void:
     var expected = float(curr_input[0] != curr_input[1])
     var distance_squared = pow((expected - xor_answer), 2)
     fitness += (1 - distance_squared)
-    if xor_inputs.empty():
+    if xor_inputs.is_empty():
         emit_signal("death")
 
 

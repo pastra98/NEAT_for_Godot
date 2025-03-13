@@ -5,7 +5,7 @@ and one at the finish line.
 """
 
 func _ready() -> void:
-    connect("body_entered", self, "check_curr_lap")
+    connect("body_entered", Callable(self, "check_curr_lap"))
 
 
 func check_curr_lap(body) -> void:

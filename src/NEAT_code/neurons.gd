@@ -1,5 +1,5 @@
 class_name Neuron
-extends Reference
+extends RefCounted
 
 """Neurons are created when a new population of genomes is created in
 ga.create_initial_population(), or when an existing link between neurons is split.

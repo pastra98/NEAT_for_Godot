@@ -1,10 +1,10 @@
 [gd_scene load_steps=37 format=2]
 
 [ext_resource path="res://demos/lunar_lander/Lander/lander.gd" type="Script" id=1]
-[ext_resource path="res://demos/lunar_lander/Lander/lander.png" type="Texture" id=2]
-[ext_resource path="res://demos/lunar_lander/Lander/fire.png" type="Texture" id=3]
-[ext_resource path="res://demos/lunar_lander/Lander/explosion.png" type="Texture" id=4]
-[ext_resource path="res://demos/lunar_lander/Lander/flag.png" type="Texture" id=5]
+[ext_resource path="res://demos/lunar_lander/Lander/lander.png" type="Texture2D" id=2]
+[ext_resource path="res://demos/lunar_lander/Lander/fire.png" type="Texture2D" id=3]
+[ext_resource path="res://demos/lunar_lander/Lander/explosion.png" type="Texture2D" id=4]
+[ext_resource path="res://demos/lunar_lander/Lander/flag.png" type="Texture2D" id=5]
 
 
 
@@ -177,7 +177,7 @@ shape = SubResource( 1 )
 
 [node name="Thrusters" type="Node2D" parent="."]
 
-[node name="MainThruster" type="AnimatedSprite" parent="Thrusters"]
+[node name="MainThruster" type="AnimatedSprite2D" parent="Thrusters"]
 position = Vector2( 0, 9 )
 scale = Vector2( 0.2, 0.2 )
 frames = SubResource( 8 )
@@ -186,7 +186,7 @@ speed_scale = 3.0
 offset = Vector2( 0, 40 )
 flip_v = true
 
-[node name="LeftThruster" type="AnimatedSprite" parent="Thrusters"]
+[node name="LeftThruster" type="AnimatedSprite2D" parent="Thrusters"]
 position = Vector2( -18, 0 )
 rotation = -1.5708
 scale = Vector2( 0.1, 0.1 )
@@ -194,7 +194,7 @@ frames = SubResource( 15 )
 frame = 4
 speed_scale = 3.0
 
-[node name="RightThruster" type="AnimatedSprite" parent="Thrusters"]
+[node name="RightThruster" type="AnimatedSprite2D" parent="Thrusters"]
 position = Vector2( 18, 0 )
 rotation = -1.5708
 scale = Vector2( 0.1, 0.1 )
@@ -227,26 +227,26 @@ position = Vector2( 0, 20.5615 )
 scale = Vector2( 0.1, 0.1 )
 shape = SubResource( 18 )
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2( 0, -4.8695 )
 scale = Vector2( 0.1, 0.1 )
 texture = ExtResource( 2 )
 
 [node name="GroundCast" type="RayCast2D" parent="."]
-cast_to = Vector2( 0, 500 )
+target_position = Vector2( 0, 500 )
 
 [node name="LeftCast" type="RayCast2D" parent="."]
-cast_to = Vector2( -500, 0 )
+target_position = Vector2( -500, 0 )
 
 [node name="RightCast" type="RayCast2D" parent="."]
-cast_to = Vector2( 500, 0 )
+target_position = Vector2( 500, 0 )
 
-[node name="Explosion" type="AnimatedSprite" parent="."]
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
 visible = false
 frames = SubResource( 31 )
 speed_scale = 2.0
 
-[node name="Flag" type="Sprite" parent="."]
+[node name="Flag" type="Sprite2D" parent="."]
 visible = false
 position = Vector2( 0, -8.74057 )
 scale = Vector2( 0.3, 0.3 )

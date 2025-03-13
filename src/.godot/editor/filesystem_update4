@@ -1,0 +1,9 @@
+res://default_env.tres
+res://demos/demo_loader/DemoLoader.tscn
+res://NEAT_code/params.gd
+res://demos/demo_loader/demo_loader.gd
+res://NEAT_usability/standalone_scripts/standalone_neuralnet.gd
+res://NEAT_code/neuralnet.gd
+res://NEAT_usability/gui/highlighter.gd
+res://NEAT_usability/gui/genome_detail/GenomeDetail.gd
+res://NEAT_usability/gui/genome_detail/NetworkDrawer.gd

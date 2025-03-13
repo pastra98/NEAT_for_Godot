@@ -1,155 +1,155 @@
 [gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-regular.tres" type="DynamicFont" id=1]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-bold-italic.tres" type="DynamicFont" id=2]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-light.tres" type="DynamicFont" id=3]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-thin.tres" type="DynamicFont" id=4]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-bold.tres" type="DynamicFont" id=5]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-italic.tres" type="DynamicFont" id=6]
-[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-medium.tres" type="DynamicFont" id=7]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-regular.tres" type="FontFile" id=1]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-bold-italic.tres" type="FontFile" id=2]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-light.tres" type="FontFile" id=3]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-thin.tres" type="FontFile" id=4]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-bold.tres" type="FontFile" id=5]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-italic.tres" type="FontFile" id=6]
+[ext_resource path="res://NEAT_usability/fonts/dynamics/roboto-medium.tres" type="FontFile" id=7]
 [ext_resource path="res://NEAT_usability/gui/Window.tscn" type="PackedScene" id=8]
 [ext_resource path="res://NEAT_usability/gui/species_list/SpeciesList.gd" type="Script" id=9]
 
 [node name="SpeciesList" instance=ExtResource( 8 )]
-margin_right = 528.0
-margin_bottom = 283.0
+offset_right = 528.0
+offset_bottom = 283.0
 script = ExtResource( 9 )
 
 [node name="Background" parent="." index="0"]
-margin_right = 528.0
-margin_bottom = 303.0
+offset_right = 528.0
+offset_bottom = 303.0
 
 [node name="WindowLayout" parent="." index="1"]
-margin_right = 528.0
-margin_bottom = 303.0
+offset_right = 528.0
+offset_bottom = 303.0
 
 [node name="Decorator" parent="WindowLayout" index="0"]
-margin_right = 528.0
+offset_right = 528.0
 
 [node name="Panel" parent="WindowLayout/Decorator" index="0"]
-margin_right = 528.0
+offset_right = 528.0
 
 [node name="DecSeperator" parent="WindowLayout/Decorator" index="1"]
-margin_right = 528.0
+offset_right = 528.0
 
 [node name="WindowName" parent="WindowLayout/Decorator/DecSeperator" index="0"]
-margin_right = 492.0
+offset_right = 492.0
 text = "Species List"
 
 [node name="Close" parent="WindowLayout/Decorator/DecSeperator" index="1"]
-margin_left = 496.0
-margin_right = 528.0
+offset_left = 496.0
+offset_right = 528.0
 
 [node name="InfoContainer" type="HBoxContainer" parent="WindowLayout" index="1"]
-margin_top = 30.0
-margin_right = 528.0
-margin_bottom = 50.0
-custom_constants/separation = 4
+offset_top = 30.0
+offset_right = 528.0
+offset_bottom = 50.0
+theme_override_constants/separation = 4
 alignment = 1
 
 [node name="GenInfo" type="Label" parent="WindowLayout/InfoContainer" index="0"]
-margin_top = 1.0
-margin_right = 142.0
-margin_bottom = 18.0
-custom_fonts/font = ExtResource( 3 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+offset_top = 1.0
+offset_right = 142.0
+offset_bottom = 18.0
+theme_override_fonts/font = ExtResource( 3 )
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Displaying Generation: "
 
 [node name="VSeparator" type="VSeparator" parent="WindowLayout/InfoContainer" index="1"]
-margin_left = 146.0
-margin_right = 407.0
-margin_bottom = 20.0
+offset_left = 146.0
+offset_right = 407.0
+offset_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="VisMenu" type="MenuButton" parent="WindowLayout/InfoContainer" index="2"]
-margin_left = 411.0
-margin_right = 528.0
-margin_bottom = 20.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+offset_left = 411.0
+offset_right = 528.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Change Visibility"
 align = 0
 
 [node name="SpeciesListContent" type="MarginContainer" parent="WindowLayout" index="2"]
-margin_top = 54.0
-margin_right = 528.0
-margin_bottom = 303.0
-custom_constants/margin_right = 10
-custom_constants/margin_top = 5
-custom_constants/margin_left = 10
-custom_constants/margin_bottom = 10
+offset_top = 54.0
+offset_right = 528.0
+offset_bottom = 303.0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="ContentSeperator" type="HBoxContainer" parent="WindowLayout/SpeciesListContent" index="0"]
-margin_left = 10.0
-margin_top = 5.0
-margin_right = 518.0
-margin_bottom = 239.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 518.0
+offset_bottom = 239.0
 
 [node name="SpeciesDetail" type="VBoxContainer" parent="WindowLayout/SpeciesListContent/ContentSeperator" index="0"]
-margin_right = 252.0
-margin_bottom = 234.0
+offset_right = 252.0
+offset_bottom = 234.0
 size_flags_horizontal = 3
 
 [node name="SpeciesInfo" type="RichTextLabel" parent="WindowLayout/SpeciesListContent/ContentSeperator/SpeciesDetail" index="0"]
-margin_right = 252.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 0, 80 )
-rect_clip_content = false
+offset_right = 252.0
+offset_bottom = 80.0
+custom_minimum_size = Vector2( 0, 80 )
+clip_contents = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/mono_font = ExtResource( 4 )
-custom_fonts/bold_italics_font = ExtResource( 2 )
-custom_fonts/italics_font = ExtResource( 6 )
-custom_fonts/bold_font = ExtResource( 5 )
-custom_fonts/normal_font = ExtResource( 1 )
-custom_colors/default_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/mono_font = ExtResource( 4 )
+theme_override_fonts/bold_italics_font = ExtResource( 2 )
+theme_override_fonts/italics_font = ExtResource( 6 )
+theme_override_fonts/bold_font = ExtResource( 5 )
+theme_override_fonts/normal_font = ExtResource( 1 )
+theme_override_colors/default_color = Color( 0, 0, 0, 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="WindowLayout/SpeciesListContent/ContentSeperator/SpeciesDetail" index="1"]
-margin_top = 84.0
-margin_right = 252.0
-margin_bottom = 234.0
-rect_min_size = Vector2( 0, 150 )
+offset_top = 84.0
+offset_right = 252.0
+offset_bottom = 234.0
+custom_minimum_size = Vector2( 0, 150 )
 
 [node name="MemberList" type="ItemList" parent="WindowLayout/SpeciesListContent/ContentSeperator/SpeciesDetail/ScrollContainer" index="0"]
-margin_right = 252.0
-margin_bottom = 150.0
+offset_right = 252.0
+offset_bottom = 150.0
 focus_mode = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/font = ExtResource( 7 )
+theme_override_fonts/font = ExtResource( 7 )
 auto_height = true
 
 [node name="SpeciesOverview" type="VBoxContainer" parent="WindowLayout/SpeciesListContent/ContentSeperator" index="1"]
-margin_left = 256.0
-margin_right = 508.0
-margin_bottom = 234.0
+offset_left = 256.0
+offset_right = 508.0
+offset_bottom = 234.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="PopulationInfo" type="RichTextLabel" parent="WindowLayout/SpeciesListContent/ContentSeperator/SpeciesOverview" index="0"]
-margin_right = 252.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 0, 80 )
-rect_clip_content = false
+offset_right = 252.0
+offset_bottom = 80.0
+custom_minimum_size = Vector2( 0, 80 )
+clip_contents = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/mono_font = ExtResource( 4 )
-custom_fonts/bold_italics_font = ExtResource( 2 )
-custom_fonts/italics_font = ExtResource( 6 )
-custom_fonts/bold_font = ExtResource( 5 )
-custom_fonts/normal_font = ExtResource( 1 )
-custom_colors/default_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/mono_font = ExtResource( 4 )
+theme_override_fonts/bold_italics_font = ExtResource( 2 )
+theme_override_fonts/italics_font = ExtResource( 6 )
+theme_override_fonts/bold_font = ExtResource( 5 )
+theme_override_fonts/normal_font = ExtResource( 1 )
+theme_override_colors/default_color = Color( 0, 0, 0, 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="WindowLayout/SpeciesListContent/ContentSeperator/SpeciesOverview" index="1"]
-margin_top = 84.0
-margin_right = 252.0
-margin_bottom = 234.0
-rect_min_size = Vector2( 0, 150 )
+offset_top = 84.0
+offset_right = 252.0
+offset_bottom = 234.0
+custom_minimum_size = Vector2( 0, 150 )
 
 [node name="SpeciesList" type="ItemList" parent="WindowLayout/SpeciesListContent/ContentSeperator/SpeciesOverview/ScrollContainer" index="0"]
-margin_right = 252.0
-margin_bottom = 150.0
+offset_right = 252.0
+offset_bottom = 150.0
 focus_mode = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/font = ExtResource( 7 )
+theme_override_fonts/font = ExtResource( 7 )
 auto_height = true

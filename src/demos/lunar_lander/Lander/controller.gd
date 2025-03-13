@@ -19,7 +19,7 @@ func _init(lander_to_control, use_lander_cam = false) -> void:
     """lander_to_control: Lander scene instance
     """
     controlled_lander = lander_to_control
-    controlled_lander.connect("death", self, "print_fitness")
+    controlled_lander.connect("death", Callable(self, "print_fitness"))
     if use_lander_cam:
         controlled_lander.get_node("Camera2D").current = true
 

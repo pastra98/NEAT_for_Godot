@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 """This class builds a neural network that can be used independently without running
 the GeneticAlgorithm or Genome nodes, provided it has access to a network
@@ -34,7 +34,7 @@ var outputs = []
 # the output that will be returned by the network.
 var output = []
 # the currently used activation func, determined by the Params class.
-var activation_func: FuncRef
+var activation_func: Callable
 
 class StandaloneNeuron:
     """A tiny class that is internal to this file to emulate the Neuron Class.
@@ -57,11 +57,13 @@ func load_config(network_name: String) -> void:
     of this script accordingly.
     """
     # open the file specified by the network name, store it in a dict
-    var file = File.new()
+    var file = FileAccess.open("user://network_configs/%s.json" % network_name, FileAccess.READ)
     # If it exists, open file and parse it's contents into a dict, else push error
-    if file.open("user://network_configs/%s.json" % network_name, File.READ) != OK:
+    if not file:
         push_error("file not found"); breakpoint
-    var network_data = parse_json(file.get_as_text())
+    var test_json_conv = JSON.new()
+    test_json_conv.parse(file.get_as_text())
+    var network_data = test_json_conv.get_data()
     file.close()
     # generate Neurons and put them into appropriate arrays
     for neuron_data in network_data["neurons"]:
@@ -86,21 +88,21 @@ func load_config(network_name: String) -> void:
     depth = network_data["depth"]
     is_runtype_active = network_data["runtype_active"]
     curr_activation_func = network_data["activation_func"]
-    # set the flush-count and make a funcref for the chosen activation func
+    # set the flush-count and make a Callable for the chosen activation func
     flush_count = 1 if is_runtype_active else depth
-    activation_func = funcref(self, curr_activation_func)
+    activation_func = Callable(self, curr_activation_func)
 
 
 static func get_saved_networks() -> Array:
     """Returns an array containing the names of every currently saved network
     """
-    var dir = Directory.new()
+    var dir = DirAccess.open("user://network_configs")
     # make a new directory for network configs if necessary
-    if dir.open("user://network_configs") == ERR_INVALID_PARAMETER:
+    if not dir:
         push_error("no networks saved yet")
         return []
     # only show files
-    dir.list_dir_begin(true)
+    dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
     # append every file to saved networks array
     var saved_networks = []
     var file_name = "This is just a placeholder"
@@ -121,7 +123,7 @@ func update(input_values: Array) -> Array:
     # feed the input neurons.
     for i in inputs.size():
         if Params.activate_inputs:
-            inputs[i].output = activation_func.call_func(input_values[i])
+            inputs[i].output = activation_func.call(input_values[i])
         else:
             inputs[i].output = input_values[i]
     # step through every hidden neuron (incl. outputs), sum up their weighted
@@ -132,7 +134,7 @@ func update(input_values: Array) -> Array:
             for connection in neuron.input_connections:
                 var input_neuron = connection[0]; var weight = connection[1]
                 weighted_sum += input_neuron.output * weight
-            neuron.output = activation_func.call_func(weighted_sum, neuron.activation_curve)
+            neuron.output = activation_func.call(weighted_sum, neuron.activation_curve)
     # copy output of output neurons into output array
     output.clear()
     for out_neuron in outputs:

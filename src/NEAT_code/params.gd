@@ -70,7 +70,7 @@ var highlighter_offset = Vector2(0, 0)
 # the radius of the highlighter circle
 var highlighter_radius = 100
 # the color of the highlighter circle
-var highlighter_color = Color.green
+var highlighter_color = Color.GREEN
 # the thickness / width of the highlighter circle
 var highlighter_width = 3
 
@@ -203,7 +203,7 @@ var selection_threshold = 30
 var is_runtype_active = true
 # Change the activation function used in the neural network. Curr_activation func
 # must be a string that exactly matches one of the activation function definitions,
-# since it is directly used as a parameter for creating a funcref in the NeuralNet
+# since it is directly used as a parameter for creating a Callable in the NeuralNet
 # class. Currently implemented activation functions are: "sigm_activate",
 # "tanh_activate", "gauss_activate"
 var curr_activation_func = "tanh_activate"
@@ -213,7 +213,7 @@ var activate_inputs = false
 
 # ----- Network drawing
 # colors of neuron types, when displaying a network. Map to NEURON_TYPE enum
-var neuron_colors = [Color.turquoise, Color.teal, Color.seashell, Color.tomato]
+var neuron_colors = [Color.TURQUOISE, Color.TEAL, Color.SEASHELL, Color.TOMATO]
 # When coloring weights, weights >= num are colored red, weights <= are blue, 
 # and everything inbetween uses this num as reference.
 var weight_max_color = 4
@@ -236,21 +236,19 @@ func load_config(config_name: String) -> void:
     If no configs have been saved yet, the /params_configs directory is made, and
     a config named 'Default.cfg' is saved with the properties of this class.
     """
-    var dir = Directory.new()
-    var config = ConfigFile.new()
     # If no param configs have been saved yet, save the settings from this file as Default
-    if dir.open("user://param_configs") == ERR_INVALID_PARAMETER:
-        dir.make_dir("user://param_configs")
+    if not DirAccess.open("user://param_configs"):
+        DirAccess.make_dir_absolute("user://param_configs")
         save_config("Default")
     # try to open the specified file, break execution if it doesn't exist
+    var config = ConfigFile.new()
+    var err = config.load("user://param_configs/%s.cfg" % config_name)
+    if err == OK:
+        for section in config.get_sections():
+            for property in config.get_section_keys(section):
+                set(property, config.get_value(section, property))
     else:
-        var err = config.load("user://param_configs/%s.cfg" % config_name)
-        if err == OK:
-            for section in config.get_sections():
-                for property in config.get_section_keys(section):
-                    set(property, config.get_value(section, property))
-        else:
-            push_error("Could not load config, error code: %d" % err); breakpoint
+        push_error("Could not load config, error code: %d" % err); breakpoint
 
 
 func save_config(config_name: String) -> void:
@@ -274,7 +272,7 @@ func save_config(config_name: String) -> void:
 # An array listing all the properties of this class that should be excluded from config
 var ignore_properties = [
     "Node", "Pause", "owner", "custom_multiplayer", "Script", "__meta__",
-    "Script Variables", "editor_description", "_import_path", "pause_mode",
+    "Script Variables", "editor_description", "_import_path", "process_mode",
     "name", "filename", "multiplayer", "process_priority", "script", "num_inputs",
     "num_outputs", "agent_body_path", "visibility_options", "default_visibility",
     "neuron_colors", "weight_max_color", "num_tries_find_link", "ignore_properties",

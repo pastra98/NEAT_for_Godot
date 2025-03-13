@@ -1,5 +1,5 @@
 class_name Genome
-extends Reference
+extends RefCounted
 
 """The Genome Class encodes the neurons and links that make up a Neural Network.
 It provides the functionality to mutate itself, make a copy of itself and all it's
@@ -38,9 +38,9 @@ func mutate(mutation_rate: int) -> void:
         add_loop_link()
     if Utils.random_f() < Params.prob_direct_link[mutation_rate]:
         add_direct_link()
-    if Utils.random_f() < Params.prob_disable_link[mutation_rate] and not links.empty():
+    if Utils.random_f() < Params.prob_disable_link[mutation_rate] and not links.is_empty():
         disable_link()
-    if Utils.random_f() < Params.prob_add_neuron[mutation_rate] and not links.empty():
+    if Utils.random_f() < Params.prob_add_neuron[mutation_rate] and not links.is_empty():
         add_neuron()
     mutate_weights(mutation_rate)
     mutate_activation_response(mutation_rate)
@@ -308,11 +308,11 @@ func get_compatibility_score(other_genome: Genome) -> float:
     # determine which genomes last innovation is older. Used to calculate excess.
     var older_innovs: Array
     # if both genomes don't have enabled links, they are compatible. stop calculations here
-    if my_innovs.empty() and other_innovs.empty():
+    if my_innovs.is_empty() and other_innovs.is_empty():
         return Params.species_boundary - 1
     # if either of the two genomes has no innovs, all of the other genes are excess genes
     # --> the first comparison for excess genes will evaluate true, and a score is calc.
-    if my_innovs.empty() or other_innovs.empty():
+    if my_innovs.is_empty() or other_innovs.is_empty():
         older_innovs = [-1]
     # if both have innovs, find the lower last innovation (genome with older innovs)
     else:

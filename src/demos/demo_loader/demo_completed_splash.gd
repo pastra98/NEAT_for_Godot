@@ -51,7 +51,7 @@ func initialize(ga: GeneticAlgorithm, old_threshold: float) -> void:
 func _on_GoBack_pressed() -> void:
     """Return to demo chooser scene.
     """
-    get_tree().change_scene("res://demos/demo_loader/DemoLoader.tscn")
+    get_tree().change_scene_to_file("res://demos/demo_loader/DemoLoader.tscn")
 
 
 func _on_Continue_pressed() -> void:
