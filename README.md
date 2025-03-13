@@ -3,7 +3,7 @@ An implementation of Kenneth O. Stanley's NEAT Algorithm for the Godot game engi
 written in gdscript. This code is intended to be easily applicable to godot
 projects where the programmer wants to use neural networks to control agents.
 
-Tested for godot 3.2.2
+Tested for godot 3.2.2 --> It kinda sorta runs for godot 4.4 now, but still several bugs
 
 ## How can I use this for my project?
 I have created a [wiki](https://github.com/pastra98/NEAT_for_Godot/wiki)
